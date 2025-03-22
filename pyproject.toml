@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "terra-classic-sdk"
-authors = ["Geoff Munn <geoff@zimoobo.com>"]
+name = "terra-classic-data-analysis-sdk"
+authors = ["Binodes <postmaster@binodes.com>"]
 classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
@@ -11,15 +11,15 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
 ]
-description = "The Python SDK for Terra Classic"
+description = "The Python SDK for Terra Classic Data Analysis Version"
 documentation = "https://terra-money.github.io/terra.py/index.html"
-homepage = "https://github.com/geoffmunn/terra.py"
-keywords = ["blockchain", "terra", "terra classic", "lunc", "crypto", "luna classic", "luna classic sdk", "lunc sdk", "osmosis", "crypto sdk", "blockchain sdk"]
+homepage = "https://github.com/BInodes-official/terra.py"
+keywords = ["blockchain", "terra", "terra classic", "lunc", "crypto", "luna classic", "luna classic sdk", "lunc sdk", "osmosis", "crypto sdk", "blockchain sdk","data analysis","lunc analysis","terra analysis","terra classic analysis"]
 license = "MIT"
 packages = [{ include = "terra_classic_sdk" }]
 readme = "README.md"
-repository = "https://github.com/terra-money/terra.py"
-version = "3.0.2"
+repository = "https://github.com/BInodes-official/terra.py"
+version = "0.1.1"
 
 [tool.poetry.dependencies]
 aiohttp = "^3.9.1"

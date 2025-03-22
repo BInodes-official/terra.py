@@ -14,48 +14,32 @@ The Python SDK for Terra Classic
 <p>
   <a href="https://terra-money.github.io/terra.py/index.html"><strong>Explore the Docs »</strong></a>
 <br/>
-  <a href="https://pypi.org/project/terra-classic-sdk/">PyPI Package</a>
+  <a href="https://pypi.org/project/terra-classic-data-analysis-sdk/">PyPI Package</a>
   ·
-  <a href="https://github.com/geoffmunn/terra.py">GitHub Repository</a>
+  <a href="https://github.com/BInodes-official/terra.py">GitHub Repository</a>
 </p></div>
 
-The Terra Classic Software Development Kit (SDK) in Python is a simple library toolkit for building software that can interact with the Terra Classic blockchain and provides simple abstractions over core data structures, serialization, key management, and API request generation.
+The Terra Classic Data Analysis Software Development Kit (SDK) not only possesses the functions of a basic SDK but also specifically enhances the on - chain historical data tracing and data analysis functions.
 
 ## Features
 
-- Written in Python with extensive support libraries
-- Versatile support for key management solutions
-- Exposes the Terra Classic API through LCDClient
-- Supports non-Terra Classic addresses for transactions
-- IBC swaps between non-Terra Classic chains are partially supported (where IBC channels exist)
-- Osmosis support (requires terra.proto 3.0.2 or newer)
+- **Basic SDK**: It has realized all the LCD query, transaction transfer  of the basic SDK, supplemented some missing LCD interfaces, and actively maintained and updated them.
+- 
+- **Enhanced Data Analysis**: Specifically enhanced the on - chain data analysis function, providing aggregation interfaces for historical data tracing and display of pre - processed results.
+- 
+- **BUG Response**: Since validators have the greatest stake in the development of the Terra chain, they actively fix bugs and add features. Currently, the [Binodes](https://validator.info/terra-classic/terravaloper1s2xpff7mj6jpxfyhr7pe25vt8puvgj4wy0tzjx) validator is the main maintainer now.
+
+
+
 
 ## Recent changes
 
-### 3.0.2
-- Fixes for governance voting and other minor issues with the 0.47 chain upgrade
-
-### 3.0.0
-- Compatibility with terra.proto 4.0.0. This is backward compatible with terra.proto 3.1.2, but going forward will be built and tested against the newest version of the Cosmos SDK.
-
-### 2.1.4
-- Liquidity pool support added, you can now join and exit liquidity pools on Osmosis
- - This is specifically matched with terra.proto version 3.1.2 
-
-### 2.1.3
-- All packages have been upgraded to the latest version, except for betterproto which is already on a pre-release version.
-
-### 2.1.2
-- Governance voting and proposal analysis now works
-- Governance APIs updated to version 1
-- Documentation reviewed and updated
-
-### 2.1.1
-- Better Osmosis support. Pools can now be requested by pool ID, or the entire list can be requested.
-
-### 2.1.0
-- Osmosis support. This is just a simple exposure of the messages in terra.proto.
-
+### 0.1.1
+- Fixes for search_votes crossed events. 
+- Fixes for Tx's function can't run use auto gas,because of gasprice
+- Add query votes logic.
+- Add tx_vote's test py
+- Update some invalid links
 <br/>
 
 # Table of Contents
