@@ -86,7 +86,7 @@ class AsyncGovAPI(BaseAsyncAPI):
         self, proposal_id: int, action: str, params: Optional[APIParams] = None
     ):
         events = [
-            ("message.action", "/cosmos.gov.v1beta1.MsgVote"),
+            # ("message.action", "/cosmos.gov.v1beta1.MsgVote"),
             ("proposal_vote.proposal_id", proposal_id),
         ]
         if params is not None:
@@ -174,24 +174,41 @@ class AsyncGovAPI(BaseAsyncAPI):
         """
 
         proposal = self.proposal(proposal_id)
-        if proposal.status == ProposalStatus.PROPOSAL_STATUS_DEPOSIT_PERIOD:
+        if proposal.status in( ProposalStatus.PROPOSAL_STATUS_DEPOSIT_PERIOD.name, ProposalStatus.PROPOSAL_STATUS_VOTING_PERIOD.name):
             res = await self._c._get(
                 f"/cosmos/gov/v1/proposals/{proposal_id}/votes", params
             )
-            return res.get("votes"), res.get("pagination")
+            votes = [
+                Vote(
+                    **{
+                        **{k: v for k, v in vote_data.items() if k != 'metadata'},
+                        "options": [
+                            WeightedVoteOption.from_data(x)
+                            for x in vote_data.get("options")
+                        ],
+                    }
+                )
+                for vote_data in res.get("votes")
+            ]
+            return votes, res.get("pagination")
 
         res, pagination = await self.__search_votes(proposal_id, params)
         votes = []
         for tx in res:
             for msg in tx.get("body").get("messages"):
                 if (
-                    msg.get("@type") == "/cosmos.gov.v1.MsgVote"
-                    and msg.get("proposal_id") == proposal_id
+                    msg.get("@type") == "/cosmos.gov.v1beta1.MsgVote"
+                    and int(msg.get("proposal_id")) == proposal_id
                 ):
-                    votes.append(WeightedVoteOption(msg.get("option"), 1))
+                    votes.append(
+                        Vote(
+                            proposal_id=proposal_id,
+                            voter=msg.get("voter"),
+                            options=[WeightedVoteOption(option=msg.get("option"),weight="1.000000000000000000")],
+                        ))
                 elif (
-                    msg.get("@type") == "/cosmos.gov.v1.MsgVoteWeighted"
-                    and msg.get("proposal_id") == proposal_id
+                    msg.get("@type") == "/cosmos.gov.v1beta1.MsgVoteWeighted"
+                    and int(msg.get("proposal_id")) == proposal_id
                 ):
                     votes.append(
                         Vote(

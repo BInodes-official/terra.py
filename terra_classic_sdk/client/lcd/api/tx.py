@@ -170,7 +170,6 @@ class AsyncTxAPI(BaseAsyncAPI):
                 if pubkey is None:
                     pubkey = acc.get_public_key()
             signer_data.append(SignerData(seq, pubkey))
-
         # create the fake fee
         if opt.fee is None:
             opt.fee = await BaseAsyncAPI._try_await(self.estimate_fee(signer_data, opt))
@@ -218,7 +217,6 @@ class AsyncTxAPI(BaseAsyncAPI):
             opt = copy.copy(options)
             opt.gas_adjustment = gas_adjustment
             gas = str(await super()._try_await(self.estimate_gas(tx, opt)))
-
         fee_amount = (
             gas_prices_coins.mul(gas).to_int_ceil_coins()
             if gas_prices_coins
@@ -229,7 +227,6 @@ class AsyncTxAPI(BaseAsyncAPI):
 
     async def estimate_gas(self, tx: Tx, options: Optional[CreateTxOptions]) -> int:
         gas_adjustment = options.gas_adjustment if options else self._c.gas_adjustment
-
         res = await self._c._post(
             "/cosmos/tx/v1beta1/simulate",
             {"tx_bytes": await super()._try_await(self.encode(tx))},
@@ -262,6 +259,7 @@ class AsyncTxAPI(BaseAsyncAPI):
         self, tx: Tx, mode: str, options: BroadcastOptions = None
     ) -> dict:
         data = {"tx_bytes": await super()._try_await(self.encode(tx)), "mode": mode}
+        print('data',data)
         return await self._c._post("/cosmos/tx/v1beta1/txs", data)  # , raw=True)
 
     async def broadcast_sync(
@@ -315,7 +313,7 @@ class AsyncTxAPI(BaseAsyncAPI):
         Returns:
             BlockTxBroadcastResult: result
         """
-        res = await self._broadcast(tx, "BROADCAST_MODE_BLOCK", options)
+        res = await self._broadcast(tx, "BROADCAST_MODE_SYNC", options)
         res = res["tx_response"]
         return BlockTxBroadcastResult(
             height=res.get("height") or 0,

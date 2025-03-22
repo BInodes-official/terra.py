@@ -1,6 +1,7 @@
 import asyncio
 import base64
 from pathlib import Path
+from terra_classic_sdk.core.fee import Fee
 
 from terra_classic_sdk.client.lcd import LCDClient
 from terra_classic_sdk.client.lcd.api.tx import CreateTxOptions
@@ -12,27 +13,30 @@ from terra_classic_sdk.key.mnemonic import MnemonicKey
 
 def main():
     terra = LCDClient(
-        url="http://localhost:1317/",
-        chain_id="localterra",
+        url="https://api-lunc-lcd.binodes.com/",
+        chain_id="columbus-5",
     )
     key = MnemonicKey(
-        mnemonic="notice oak worry limit wrap speak medal online prefer cluster roof addict wrist behave treat actual wasp year salad speed social layer crew genius"
+        mnemonic="sport oppose usual cream task benefit canvas party sock century involve quality"
     )
-    test1 = terra.wallet(key=key)
+    wallet = terra.wallet(key=key)
 
     msg = MsgSend(
-        "terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v",
-        "terra17lmam6zguazs5q5u6z5mmx76uj63gldnse2pdp",
+        "terra1drs4gul908c59638gu9s88mugdnujdprjhtu7n",
+        "terra1s2xpff7mj6jpxfyhr7pe25vt8puvgj4wyq8lz4",
         Coins(uluna=20000),
     )
     print(msg)
-    tx = test1.create_and_sign_tx(
-        CreateTxOptions(
-            msgs=[msg],
-            gas_prices="0.15uluna",
-            gas="63199",  # gas="auto", gas_adjustment=1.1
-        )
-    )
+    tx = wallet.create_and_sign_tx(CreateTxOptions(
+        msgs=[MsgSend(
+            wallet.key.acc_address,
+            'terra1s2xpff7mj6jpxfyhr7pe25vt8puvgj4wyq8lz4',
+            "1000000uluna"  # send 1 luna
+        )],
+        memo="test transaction!",
+        gas_adjustment=1.2,  # Auto fee
+        # fee=Fee(240324,'7023928uluna'),  # The fee designated by the user
+    ))
     print(tx)
 
     result = terra.tx.broadcast(tx)

@@ -159,7 +159,7 @@ class Proposal(JSONSerializable):
 @attr.s
 class WeightedVoteOption(JSONSerializable):
     weight: str = attr.ib()
-    option: VoteOption = attr.ib(converter=int)
+    option: VoteOption = attr.ib()
 
     def to_amino(self) -> dict:
         return {"weight": self.weight, "option": self.option.name}

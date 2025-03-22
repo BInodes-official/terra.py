@@ -196,6 +196,7 @@ class Key:
             )
         ]
         signature = self.sign(sign_doc.to_bytes())
+        print('signature',signature)
 
         # restore
         sign_doc.auth_info.signer_infos = si_backup
@@ -234,7 +235,6 @@ class Key:
             auth_info=signedTx.auth_info,
             tx_body=signedTx.body,
         )
-
         if options.sign_mode == SignMode.SIGN_MODE_LEGACY_AMINO_JSON:
             signature: SignatureV2 = self.create_signature_amino(signDoc)
         else:

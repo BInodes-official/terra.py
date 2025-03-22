@@ -1,7 +1,7 @@
 from terra_classic_sdk.client.lcd import LCDClient
 
 terra = LCDClient(
-    url="https://terra-classic-lcd.publicnode.com/",
+    url="https://api-lunc-lcd.binodes.com",
     chain_id="columbus-5",
 )
 
@@ -12,7 +12,7 @@ def test_validator_set():
 
 
 def test_validator_set_with_height():
-    result = terra.tendermint.validator_set(14513401)
+    result = terra.tendermint.validator_set(22360079)
     print(result)
 
 
@@ -27,7 +27,7 @@ def test_block_info():
 
 
 def test_block_info_with_height():
-    result = terra.tendermint.block_info(14513401)
+    result = terra.tendermint.block_info(22360079)
     print(result)
 
 

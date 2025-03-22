@@ -12,29 +12,29 @@ from terra_classic_sdk.key.mnemonic import MnemonicKey
 
 def main():
     terra = LCDClient(
+        url="https://api-lunc-lcd.binodes.com/",
         chain_id="columbus-5",
-        url="https://terra-classic-lcd.publicnode.com/",
     )
     key = MnemonicKey(
-        mnemonic="notice oak worry limit wrap speak medal online prefer cluster roof addict wrist behave treat actual wasp year salad speed social layer crew genius"
+        mnemonic="sport oppose usual cream task benefit canvas party sock century involve quality"
     )
+    wallet = terra.wallet(key=key)
 
-    test1 = terra.wallet(key=key)
+    print(wallet)
 
-    print(test1)
     msg = MsgSwap(
-        trader="terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v",
-        offer_coin="100000uluna",
+        trader="terra1drs4gul908c59638gu9s88mugdnujdprjhtu7n",
+        offer_coin="1000000uluna",
         ask_denom="uusd",
     )
     print(msg)
-    tx = test1.create_and_sign_tx(
-        CreateTxOptions(msgs=[msg], gas_prices="0.2uluna", gas_adjustment="1.4")
+    tx = wallet.create_and_sign_tx(
+        CreateTxOptions(msgs=[msg],  gas_adjustment="1.4")
     )
     print(tx)
 
-    result = terra.tx.broadcast(tx)
-    print(result)
+    # result = terra.tx.broadcast(tx)
+    # print(result)
 
 
 main()

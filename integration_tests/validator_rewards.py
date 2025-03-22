@@ -1,8 +1,8 @@
 from terra_classic_sdk.client.lcd import LCDClient
 
-terra = LCDClient(chain_id="columbus-5", url="https://terra-classic-lcd.publicnode.com")
+terra = LCDClient(chain_id="columbus-5", url="https://api-lunc-lcd.binodes.com")
 print(
-    terra.distribution.validator_rewards(
-        "terravaloper1259cmu5zyklsdkmgstxhwqpe0utfe5hhyty0at"
+    terra.distribution.rewards(
+        "terra1s2xpff7mj6jpxfyhr7pe25vt8puvgj4wyq8lz4"
     )
 )

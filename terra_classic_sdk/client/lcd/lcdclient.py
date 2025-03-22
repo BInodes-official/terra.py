@@ -59,7 +59,7 @@ class AsyncLCDClient:
         self.last_request_height = None
 
         #default_price, default_adjustment = get_default(chain_id)
-        default_price = Coins.from_str('1uluna')
+        default_price = Coins.from_str('28.325uluna')
         default_adjustment = 1
         self.gas_prices = Coins(gas_prices) if gas_prices else default_price
         self.gas_adjustment = gas_adjustment if gas_adjustment else default_adjustment

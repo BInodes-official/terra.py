@@ -150,7 +150,8 @@ class SimplePublicKey(PublicKey):
     key: bytes = attr.ib()
 
     def to_amino(self) -> dict:
-        return {"type": self.type_amino, "value": self.key}
+        encoded_key = base64.b64encode(self.key).decode('utf-8')
+        return {"type": self.type_amino, "value": encoded_key}
 
     def to_data(self) -> dict:
         return {"@type": self.type_url, "key": self.key}
@@ -202,7 +203,8 @@ class ValConsPubKey(PublicKey):
     key: str = attr.ib()
 
     def to_amino(self) -> dict:
-        return {"type": self.type_amino, "value": self.key}
+        encoded_key = base64.b64encode(self.key).decode('utf-8')
+        return {"type": self.type_amino, "value": encoded_key}
 
     def to_data(self) -> dict:
         return {"@type": self.type_url, "key": self.key}

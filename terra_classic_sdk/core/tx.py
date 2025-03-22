@@ -91,7 +91,6 @@ class Tx(JSONSerializable):
 
     @classmethod
     def from_amino(cls, data:dict) -> Tx:
-        print (data)
         return cls(
             TxBody.from_amino(data["body"]),
             AuthInfo.from_amino(data["auth_info"]),

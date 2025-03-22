@@ -1,7 +1,7 @@
 from terra_classic_sdk.client.lcd import LCDClient, PaginationOptions
 
 terra = LCDClient(
-    url="https://terra-classic-lcd.publicnode.com/",
+    url="https://api-lunc-lcd.binodes.com",
     chain_id="columbus-5",
 )
 
