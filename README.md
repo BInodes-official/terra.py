@@ -1,12 +1,12 @@
 <br/>
 <br/>
 
-<div  align="center"> <p > <img src="https://raw.githubusercontent.com/geoffmunn/terra.py/main/docs/img/logo.png" width=500 alt="py-sdk-logo"></p>
+<div  align="center"> <p > <img src="https://img.binodes.com/i/2025/03/23/67dfce5dd9f25.png" width=500 alt="py-sdk-logo"></p>
 
-The Python SDK for Terra Classic
+The Python SDK for Terra Classic Data Analysis
 <br/>
 
-<p><sub>(Unfamiliar with Terra?  <a href="https://docs.terra.money/">Check out the Terra Docs</a>)</sub></p>
+<p><sub>(Unfamiliar with Terra?  <a href="https://www.binodes.com/endpoints/terra">Check out the Terra Docs</a>)</sub></p>
 
   <p > <img alt="GitHub" src="https://img.shields.io/github/license/terra-money/terra-sdk-python">
 <img alt="Python" src="https://img.shields.io/pypi/pyversions/terra-sdk">
@@ -23,17 +23,18 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 ## Features
 
-- **Basic SDK**: It has realized all the LCD query, transaction transfer  of the basic SDK, supplemented some missing LCD interfaces, and actively maintained and updated them.
-- 
-- **Enhanced Data Analysis**: Specifically enhanced the on - chain data analysis function, providing aggregation interfaces for historical data tracing and display of pre - processed results.
-- 
-- **BUG Response**: Since validators have the greatest stake in the development of the Terra chain, they actively fix bugs and add features. Currently, the [Binodes](https://validator.info/terra-classic/terravaloper1s2xpff7mj6jpxfyhr7pe25vt8puvgj4wy0tzjx) validator is the main maintainer now.
+- **Basic SDK**: Inherit all the LCD query、Tx transaction from the basic SDK and maintain updates.
 
+- **Data Analysis**: Enhanced the on-chain data analysis function, providing aggregation interfaces for historical data tracing and display of pre - processed results.
 
+- **BUG Fixed**: Since validators have the greatest stake in the development of the Terra chain, they actively fix bugs and add features. Currently, the [Binodes](https://validator.info/terra-classic/terravaloper1s2xpff7mj6jpxfyhr7pe25vt8puvgj4wy0tzjx) validator is the main maintainer.
 
 
 ## Recent changes
-
+### 0.1.2
+- Fixed the problem of incorrect automatic gas calculation when the Fee was not set for TX transactions in the basic SDK.
+- Fixed the issue in the basic SDK where there were no query results when querying the vote list.
+- Add default LCD and Chain ID.
 ### 0.1.1
 - Fixes for search_votes crossed events. 
 - Fixes for Tx's function can't run use auto gas,because of gasprice
@@ -86,10 +87,10 @@ Terra Classic SDK requires <a href="https://www.python.org/downloads/">Python v3
 Terra SDK can be installed (preferably in a `virtual environment` from PyPI using `pip`) as follows:
 
 ```
-$ pip install -U terra-classic-sdk
+$ pip install -U terra-classic-data-analysis-sdk
 ```
 
-<sub>_You might need to run pip via ```python -m pip install -U terra_classic_sdk```. Additionally, you might have `pip3` installed instead of `pip`; proceed according to your own setup._<sub>
+<sub>_You might need to run pip via ```python -m pip install -U terra-classic-data-analysis-sdk```. Additionally, you might have `pip3` installed instead of `pip`; proceed according to your own setup._<sub>
 
 ## Dependencies
 
@@ -121,7 +122,6 @@ $ make qa && make format
 # Usage Examples
 
 Terra Classic SDK can help you read block data, sign and send transactions, deploy and interact with contracts, and many more.
-The following examples are provided to help you get started. Use cases and functionalities of the Terra Classic SDK are not limited to the following examples and can be found in full <a href="https://github.com/geoffmunn/utility-scripts/">here</a>.
 
 In order to interact with the Terra Classic blockchain, you'll need a connection to a Terra Classic node. This can be done through setting up an LCDClient (The LCDClient is an object representing an HTTP connection to a Terra Classic LCD node.):
 
@@ -274,8 +274,6 @@ You can give this <a href="https://opensource.guide/how-to-contribute/#how-to-su
 # License
 
 This software is licensed under the MIT license. See [LICENSE](./LICENSE) for full disclosure.
-
-© 2021 Terraform Labs, PTE.
 
 <hr/>
 

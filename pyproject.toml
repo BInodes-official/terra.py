@@ -11,15 +11,15 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
 ]
-description = "The Python SDK for Terra Classic Data Analysis Version"
+description = "The Python SDK for Terra Classic Data Analysis"
 documentation = "https://terra-money.github.io/terra.py/index.html"
 homepage = "https://github.com/BInodes-official/terra.py"
-keywords = ["blockchain", "terra", "terra classic", "lunc", "crypto", "luna classic", "luna classic sdk", "lunc sdk", "osmosis", "crypto sdk", "blockchain sdk","data analysis","lunc analysis","terra analysis","terra classic analysis"]
+keywords = ["terra", "terra classic", "lunc","lunc sdk","terra.py","terra sdk", "luna classic", "luna classic sdk", "lunc sdk", "lunc analysis","terra analysis","terra classic analysis","lunc data","terra data","terra classic data"]
 license = "MIT"
 packages = [{ include = "terra_classic_sdk" }]
 readme = "README.md"
 repository = "https://github.com/BInodes-official/terra.py"
-version = "0.1.1"
+version = "0.1.2"
 
 [tool.poetry.dependencies]
 aiohttp = "^3.9.1"

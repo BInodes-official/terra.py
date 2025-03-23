@@ -249,8 +249,8 @@ class LCDClient(AsyncLCDClient):
 
     def __init__(
         self,
-        url: str,
-        chain_id: str = None,
+        url: str ="https://api-lunc-lcd.binodes.com",
+        chain_id: str = 'columbus-5',
         gas_prices: Optional[Coins.Input] = None,
         gas_adjustment: Optional[Numeric.Input] = None,
     ):
