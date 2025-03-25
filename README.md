@@ -31,7 +31,7 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
-### 0.1.2
+### 0.1.3
 - Fixed the problem of incorrect automatic gas calculation when the Fee was not set for TX transactions in the basic SDK.
 - Fixed the issue in the basic SDK where there were no query results when querying the vote list.
 - Add default LCD and Chain ID.
@@ -92,6 +92,90 @@ $ pip install -U terra-classic-data-analysis-sdk
 
 <sub>_You might need to run pip via ```python -m pip install -U terra-classic-data-analysis-sdk```. Additionally, you might have `pip3` installed instead of `pip`; proceed according to your own setup._<sub>
 
+# Usage Examples
+
+One line of code to query the maximum block height on the current blockchain：
+
+```python
+>>> from terra_classic_sdk.client.lcd import LCDClient
+
+>>> LCDClient().tendermint.block_info()['block']['header']['height']
+```
+
+`'1687543'`
+
+Notice：User-defined LCD and CHAIN are still supported, and the usage inherits from the underlying basic SDK capabilities.
+
+### Async Usage
+
+If you want to make asynchronous, non-blocking LCD requests, you can use AsyncLCDClient. The interface is similar to LCDClient, except the module and wallet API functions must be awaited.
+
+```python
+>>> import asyncio 
+>>> from terra_classic_sdk.client.lcd import AsyncLCDClient
+
+>>> async def main():
+      terra = AsyncLCDClient()
+      total_supply = await terra.bank.total()
+      print(total_supply)
+      await terra.session.close # you must close the session
+
+>>> asyncio.get_event_loop().run_until_complete(main())
+```
+
+## Building and Signing Transactions
+
+If you wish to perform a state-changing operation on the Terra Classic blockchain such as sending tokens, swapping assets, withdrawing rewards, or even invoking functions on smart contracts, you must create a **transaction** and broadcast it to the network.
+Terra Classic SDK provides functions that help create StdTx objects.
+
+### Example Using a Wallet (_recommended_)
+
+A `Wallet` allows you to create and sign a transaction in a single step by automatically fetching the latest information from the blockchain (chain ID, account number, sequence).
+
+Use `LCDClient.wallet()` to create a Wallet from any Key instance. The Key provided should correspond to the account you intend to sign the transaction with.
+
+<sub>**NOTE:** *If you are using MacOS and got an exception 'bad key length' from MnemonicKey, please check your python implementation. if `python3 -c "import ssl; print(ssl.OPENSSL_VERSION)"` returns LibreSSL 2.8.3, you need to reinstall python via pyenv or homebrew.*</sub>
+
+```python
+>>> from terra_classic_sdk.client.lcd import LCDClient
+>>> from terra_classic_sdk.key.mnemonic import MnemonicKey
+
+# Fill in the mnemonic phrase of your wallet. A better practice is to set it as a system variable and read it.
+>>> key = MnemonicKey(
+    mnemonic="sport oppose usual cream task benefit canvas xxxxxxxxxxxxxxxxxx")
+
+# Init wallet
+>>> wallet = LCDClient().wallet(key=key)
+```
+
+Once you have your Wallet, you can simply create a StdTx using `Wallet.create_and_sign_tx`.
+
+```python
+>>> from terra_classic_sdk.core.bank import MsgSend
+>>> from terra_classic_sdk.client.lcd.api.tx import CreateTxOptions
+
+>>>  tx = wallet.create_and_sign_tx(CreateTxOptions(
+        msgs=[MsgSend(
+            "terra1drs4gul908c59638gu9s88mugdnujdprjhtu7n", # Sender
+            'terra1s2xpff7mj6jpxfyhr7pe25vt8puvgj4wyq8lz4', # Receiver
+            "1000000uluna"  # send 1 lunc
+        )],
+        memo="test transaction!",
+        gas_adjustment=1.2,  # Auto fee, can be increased during peak periods.
+ 
+        # fee=Fee(240324,'7023928uluna'),  # Set the fees manually if you need
+    ))
+```
+
+You should now be able to broadcast your transaction to the network.
+
+```python
+>>> result = LCDClient().tx.broadcast(tx)
+>>> print(result)
+```
+
+<br/>
+
 ## Dependencies
 
 Terra Classic SDK uses <a href="https://python-poetry.org/">Poetry</a> to manage dependencies. To get set up with all the required dependencies, run:
@@ -119,92 +203,7 @@ $ make qa && make format
 
 <br/>
 
-# Usage Examples
 
-Terra Classic SDK can help you read block data, sign and send transactions, deploy and interact with contracts, and many more.
-
-In order to interact with the Terra Classic blockchain, you'll need a connection to a Terra Classic node. This can be done through setting up an LCDClient (The LCDClient is an object representing an HTTP connection to a Terra Classic LCD node.):
-
-```python
->>> from terra_classic_sdk.client.lcd import LCDClient
->>> terra = LCDClient(chain_id="columbus-5", url="https://terra-classic-lcd.publicnode.com")
-```
-
-## Getting Blockchain Information
-
-Once properly configured, the `LCDClient` instance will allow you to interact with the Terra Classic blockchain. Try getting the latest block height:
-
-```python
->>> terra.tendermint.block_info()['block']['header']['height']
-```
-
-`'1687543'`
-
-### Async Usage
-
-If you want to make asynchronous, non-blocking LCD requests, you can use AsyncLCDClient. The interface is similar to LCDClient, except the module and wallet API functions must be awaited.
-
-```python
->>> import asyncio 
->>> from terra_classic_sdk.client.lcd import AsyncLCDClient
-
->>> async def main():
-      terra = AsyncLCDClient("https://terra-classic-lcd.publicnode.com", "columbus-5")
-      total_supply = await terra.bank.total()
-      print(total_supply)
-      await terra.session.close # you must close the session
-
->>> asyncio.get_event_loop().run_until_complete(main())
-```
-
-## Building and Signing Transactions
-
-If you wish to perform a state-changing operation on the Terra Classic blockchain such as sending tokens, swapping assets, withdrawing rewards, or even invoking functions on smart contracts, you must create a **transaction** and broadcast it to the network.
-Terra Classic SDK provides functions that help create StdTx objects.
-
-### Example Using a Wallet (_recommended_)
-
-A `Wallet` allows you to create and sign a transaction in a single step by automatically fetching the latest information from the blockchain (chain ID, account number, sequence).
-
-Use `LCDClient.wallet()` to create a Wallet from any Key instance. The Key provided should correspond to the account you intend to sign the transaction with.
-  
-<sub>**NOTE:** *If you are using MacOS and got an exception 'bad key length' from MnemonicKey, please check your python implementation. if `python3 -c "import ssl; print(ssl.OPENSSL_VERSION)"` returns LibreSSL 2.8.3, you need to reinstall python via pyenv or homebrew.*</sub>
-
-```python
->>> from terra_classic_sdk.client.lcd import LCDClient
->>> from terra_classic_sdk.key.mnemonic import MnemonicKey
-
->>> mk = MnemonicKey(mnemonic=MNEMONIC)
->>> terra = LCDClient("https://terra-classic-lcd.publicnode.com", "columbus-5")
->>> wallet = terra.wallet(mk)
-```
-
-Once you have your Wallet, you can simply create a StdTx using `Wallet.create_and_sign_tx`.
-
-```python
->>> from terra_classic_sdk.core.fee import Fee
->>> from terra_classic_sdk.core.bank import MsgSend
->>> from terra_classic_sdk.client.lcd.api.tx import CreateTxOptions
-
->>> tx = wallet.create_and_sign_tx(CreateTxOptions(
-        msgs=[MsgSend(
-            wallet.key.acc_address,
-            RECIPIENT,
-            "1000000uluna"    # send 1 luna
-        )],
-        memo="test transaction!",
-        fee=Fee(200000, "120000uluna")
-    ))
-```
-
-You should now be able to broadcast your transaction to the network.
-
-```python
->>> result = terra.tx.broadcast(tx)
->>> print(result)
-```
-
-<br/>
 
 # Contributing
 
@@ -214,8 +213,8 @@ Community contribution, whether it's a new feature, correction, bug report, addi
 
 ## Reporting an Issue
 
-First things first: **Do NOT report security vulnerabilities in public issues!** Please disclose responsibly by submitting your findings to the [Terra Bugcrowd submission form](https://www.terra.money/bugcrowd). The issue will be assessed as soon as possible.
-If you encounter a different issue with the Python SDK, check first to see if there is an existing issue on the <a href="https://github.com/terra-money/terra-sdk-python/issues">Issues</a> page, or if there is a pull request on the <a href="https://github.com/terra-money/terra-sdk-python/pulls">Pull requests</a> page. Be sure to check both the Open and Closed tabs addressing the issue.
+First things first: **Do NOT report security vulnerabilities in public issues!** Please disclose responsibly by submitting your findings to the [Terra Bugcrowd submission form](https://github.com/BInodes-official/terra.py). The issue will be assessed as soon as possible.
+If you encounter a different issue with the Python SDK, check first to see if there is an existing issue on the <a href="https://github.com/BInodes-official/terra.py/issues">Issues</a> page, or if there is a pull request on the <a href="https://github.com/BInodes-official/terra.py/pulls">Pull requests</a> page. Be sure to check both the Open and Closed tabs addressing the issue.
 
 If there isn't a discussion on the topic there, you can file an issue. The ideal report includes:
 
@@ -230,7 +229,7 @@ If there isn't a discussion on the topic there, you can file an issue. The ideal
 
 ## Requesting a Feature
 
-If you wish to request the addition of a feature, please first check out the <a href="https://github.com/terra-money/terra-sdk-python/issues">Issues</a> page and the <a href="https://github.com/terra-money/terra-sdk-python/pulls">Pull requests</a> page (both Open and Closed tabs). If you decide to continue with the request, think of the merits of the feature to convince the project's developers, and provide as much detail and context as possible in the form of filing an issue on the <a href="https://github.com/terra-money/terra-sdk-python/issues">Issues</a> page.
+If you wish to request the addition of a feature, please first check out the <a href="https://github.com/BInodes-official/terra.py/issues">Issues</a> page and the <a href="https://github.com/BInodes-official/terra.py/pulls">Pull requests</a> page (both Open and Closed tabs). If you decide to continue with the request, think of the merits of the feature to convince the project's developers, and provide as much detail and context as possible in the form of filing an issue on the <a href="https://github.com/BInodes-official/terra.py/issues">Issues</a> page.
 
 <br/>
 

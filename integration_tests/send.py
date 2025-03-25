@@ -16,20 +16,13 @@ def main():
         url="https://api-lunc-lcd.binodes.com/",
         chain_id="columbus-5",
     )
-    key = MnemonicKey(
-        mnemonic="sport oppose usual cream task benefit canvas party sock century involve quality"
-    )
+    key = MnemonicKey(mnemonic="sport oppose usual cream task benefit canvas party sock century involve quality")
     wallet = terra.wallet(key=key)
 
-    msg = MsgSend(
-        "terra1drs4gul908c59638gu9s88mugdnujdprjhtu7n",
-        "terra1s2xpff7mj6jpxfyhr7pe25vt8puvgj4wyq8lz4",
-        Coins(uluna=20000),
-    )
-    print(msg)
+
     tx = wallet.create_and_sign_tx(CreateTxOptions(
         msgs=[MsgSend(
-            wallet.key.acc_address,
+            "terra1drs4gul908c59638gu9s88mugdnujdprjhtu7n",
             'terra1s2xpff7mj6jpxfyhr7pe25vt8puvgj4wyq8lz4',
             "1000000uluna"  # send 1 luna
         )],
