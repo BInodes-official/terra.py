@@ -59,7 +59,7 @@ class MsgExecAuthorized(Msg):
     @classmethod
     def from_data(cls, data: dict) -> MsgExecAuthorized:
         return cls(
-            grantee=data['value']['grantee'], msgs=[Msg.from_data(md) for md in data['value']['msgs']]
+            grantee=data['grantee'], msgs=[Msg.from_data(md) for md in data['msgs']]
         )
 
     def to_proto(self) -> MsgExec_pb:
