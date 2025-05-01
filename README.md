@@ -31,6 +31,8 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### 0.1.3.1
+- fix(authz): update MsgExecAuthorized to properly handle 'msgs' field- Change 'msgs' field handling in MsgExecAuthorized.from_data
 ### 0.1.3
 - Fixed the problem of incorrect automatic gas calculation when the Fee was not set for TX transactions in the basic SDK.
 - Fixed the issue in the basic SDK where there were no query results when querying the vote list.
