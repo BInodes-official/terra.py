@@ -15,6 +15,7 @@ from .msgs import (
     MsgDelegate,
     MsgEditValidator,
     MsgUndelegate,
+    MsgCancelUnbondingDelegation,
 )
 
 __all__ = [
@@ -27,6 +28,7 @@ __all__ = [
     "MsgDelegate",
     "MsgEditValidator",
     "MsgUndelegate",
+    "MsgCancelUnbondingDelegation",
     "Redelegation",
     "RedelegationEntry",
     "UnbondingDelegation",

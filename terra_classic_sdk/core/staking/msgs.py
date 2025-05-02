@@ -6,7 +6,7 @@ from typing import Optional
 
 import attr
 from terra_proto.cosmos.staking.v1beta1 import (
-    MsgBeginRedelegate as MsgBeginRedelegate_pb,
+    MsgBeginRedelegate as MsgBeginRedelegate_pb, MsgCancelUnbondingDelegation as MsgCancelUnbondingDelegation_pb,
 )
 from terra_proto.cosmos.staking.v1beta1 import (
     MsgCreateValidator as MsgCreateValidator_pb,
@@ -199,6 +199,62 @@ class MsgUndelegate(Msg):
 
     @classmethod
     def from_proto(cls, proto: MsgUndelegate_pb) -> MsgUndelegate:
+        return cls(
+            delegator_address=proto.delegator_address,
+            validator_address=proto.validator_address,
+            amount=Coin.from_proto(proto.amount),
+        )
+
+@attr.s
+class MsgCancelUnbondingDelegation(Msg):
+    """Cancel an unbonding delegation for a given validator and amount.
+
+    Args:
+        delegator_address: delegator's account address
+        validator_address: validator operator address
+        amount (Coin): the amount of Luna to cancel unbonding with
+    """
+
+    type_amino = "staking/MsgCancelUnbondingDelegation"
+    """"""
+    type_url = "/cosmos.staking.v1beta1.MsgCancelUnbondingDelegation"
+    """"""
+    action = "cancel_unbonding_delegation"
+    """"""
+    prototype = MsgCancelUnbondingDelegation_pb  # 假设已从 proto 导入
+    """"""
+
+    delegator_address: AccAddress = attr.ib()
+    validator_address: ValAddress = attr.ib()
+    amount: Coin = attr.ib(converter=Coin.parse)
+
+    def to_amino(self) -> dict:
+        return {
+            "type": self.type_amino,
+            "value": {
+                "delegator_address": self.delegator_address,
+                "validator_address": self.validator_address,
+                "amount": self.amount.to_amino(),
+            },
+        }
+
+    @classmethod
+    def from_data(cls, data: dict) -> "MsgCancelUnbondingDelegation":
+        return cls(
+            delegator_address=data["delegator_address"],
+            validator_address=data["validator_address"],
+            amount=Coin.from_data(data["amount"]),
+        )
+
+    def to_proto(self) -> MsgCancelUnbondingDelegation_pb:
+        return MsgCancelUnbondingDelegation_pb(
+            delegator_address=self.delegator_address,
+            validator_address=self.validator_address,
+            amount=self.amount.to_proto(),
+        )
+
+    @classmethod
+    def from_proto(cls, proto: MsgCancelUnbondingDelegation_pb) -> "MsgCancelUnbondingDelegation":
         return cls(
             delegator_address=proto.delegator_address,
             validator_address=proto.validator_address,

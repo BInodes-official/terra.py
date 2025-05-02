@@ -14,7 +14,7 @@ from terra_classic_sdk.core.distribution import (
     MsgWithdrawDelegatorReward,
     MsgWithdrawValidatorCommission,
 )
-from terra_classic_sdk.core.gov.msgs import MsgDeposit, MsgSubmitProposal, MsgVote
+from terra_classic_sdk.core.gov.msgs import MsgDeposit, MsgSubmitProposal, MsgVote, MsgVote_v1beta1
 from terra_classic_sdk.core.ibc.msgs import (
     MsgAcknowledgement,
     MsgChannelCloseConfirm,
@@ -48,6 +48,7 @@ from terra_classic_sdk.core.staking import (
     MsgDelegate,
     MsgEditValidator,
     MsgUndelegate,
+    MsgCancelUnbondingDelegation,
 )
 from terra_classic_sdk.core.wasm import (
     MsgClearAdmin,
@@ -56,7 +57,8 @@ from terra_classic_sdk.core.wasm import (
     #MsgMigrateCode,
     MsgMigrateContract,
     MsgStoreCode,
-    MsgUpdateAdmin
+    MsgUpdateAdmin,
+    MsgInstantiateContract2
 )
 from terra_classic_sdk.core.feegrant import (
     MsgGrantAllowance,
@@ -82,7 +84,7 @@ distribution_msgs = [
     MsgWithdrawDelegatorReward,
     MsgWithdrawValidatorCommission,
 ]
-gov_msgs = [MsgDeposit, MsgSubmitProposal, MsgVote]
+gov_msgs = [MsgDeposit, MsgSubmitProposal, MsgVote,MsgVote_v1beta1]
 market_msgs = [MsgSwap, MsgSwapSend]
 authz_msgs = [
     MsgExecAuthorized,
@@ -101,6 +103,7 @@ staking_msgs = [
     MsgDelegate,
     MsgEditValidator,
     MsgUndelegate,
+    MsgCancelUnbondingDelegation,
 ]
 wasm_msgs = [
     MsgStoreCode,
@@ -110,6 +113,7 @@ wasm_msgs = [
     MsgMigrateContract,
     MsgUpdateAdmin,
     MsgClearAdmin,
+    MsgInstantiateContract2,
 ]
 feegrant_msgs = [
     MsgGrantAllowance,

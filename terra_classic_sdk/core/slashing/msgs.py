@@ -34,7 +34,7 @@ class MsgUnjail(Msg):
 
     @classmethod
     def from_data(cls, data: dict) -> MsgUnjail:
-        return cls(address=data["address"])
+        return cls(address=data["validator_addr"])
 
     def to_proto(self) -> MsgUnjail_pb:
         return MsgUnjail_pb(validator_addr=self.address)

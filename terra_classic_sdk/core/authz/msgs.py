@@ -128,9 +128,9 @@ class MsgGrantAuthorization(Msg):
     @classmethod
     def from_data(cls, data: dict) -> MsgGrantAuthorization:
         return cls(
-            granter=data["value"]["granter"],
-            grantee=data["value"]["grantee"],
-            grant=AuthorizationGrant.from_data(data["value"]["grant"])
+            granter=data["granter"],
+            grantee=data["grantee"],
+            grant=AuthorizationGrant.from_data(data["grant"])
         )
 
     def to_proto(self) -> MsgGrant_pb:

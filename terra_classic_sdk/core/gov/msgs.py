@@ -162,7 +162,7 @@ class MsgVote(Msg):
 
     type_amino = "gov/MsgVote"
     """"""
-    type_url = "/cosmos.gov.v1beta1.MsgVote"
+    type_url = "/cosmos.gov.v1.MsgVote"
     """"""
     action = "vote"
     """"""
@@ -223,6 +223,90 @@ class MsgVote(Msg):
         return MsgVote_pb(
             proposal_id=self.proposal_id, 
             voter=self.voter, 
+            option=self.option
+        )
+
+    @classmethod
+    def from_proto(cls, proto: MsgVote_pb) -> MsgVote:
+        return cls(
+            proposal_id=proto.proposal_id,
+            voter=proto.voter,
+            option=proto.option
+        )
+
+@attr.s
+class MsgVote_v1beta1(Msg):
+    """Vote for an active voting-stage proposal.
+
+    Args:
+        proposal_id (int): proposal to vote for
+        voter (AccAddress): account casting vote
+        option (VoteOption): vote option (must be one of: :data:`MsgVote.ABSTAIN`, :data:`MsgVote.YES`, :data:`MsgVote.NO`, or :data:`MsgVote.NO_WITH_VETO`),
+    """
+
+    type_amino = "gov/MsgVote"
+    """"""
+    type_url = "/cosmos.gov.v1beta1.MsgVote"
+    """"""
+    action = "vote"
+    """"""
+    prototype = MsgVote_pb
+    """"""
+
+    EMPTY = "Empty"
+    """Encodes an empty vote option."""
+
+    YES = "Yes"
+    """"""
+    ABSTAIN = "Abstain"
+    """"""
+    NO = "No"
+    """"""
+    NO_WITH_VETO = "NoWithVeto"
+    """"""
+
+    proposal_id: int = attr.ib(converter=int)
+    voter: AccAddress = attr.ib()
+    option: VoteOption = attr.ib()
+
+    """
+    @option.validator
+    def _check_option(self, attribute, value):
+        possible_options = [
+            self.EMPTY,
+            self.YES,
+            self.ABSTAIN,
+            self.NO,
+            self.NO_WITH_VETO,
+        ]
+        if value not in possible_options:
+            raise TypeError(
+                f"incorrect value for option: {value}, must be one of: {possible_options}"
+            )
+    """
+
+    def to_amino(self) -> dict:
+        return {
+            "type": self.type_amino,
+            "value": {
+                "proposal_id": str(self.proposal_id),
+                "voter": self.voter,
+                "option": self.option.name,
+            },
+        }
+
+    @classmethod
+    def from_data(cls, data: dict) -> MsgVote:
+        return cls(
+            proposal_id=data["proposal_id"],
+            voter=data["voter"],
+            option=data["option"],
+        )
+
+    def to_proto(self) -> MsgVote_pb:
+        return MsgVote_pb(
+            proposal_id=self.proposal_id,
+            voter=self.voter,
             option=self.option
         )
 

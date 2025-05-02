@@ -142,7 +142,7 @@ class AccessConfig(JSONSerializable):
         return cls(
             permission=convert_access_type_from_json(data["permission"]),
             address=data["address"],
-        )
+        ) if data else None
 
     @classmethod
     def from_proto(cls, proto: AccessConfig_pb) -> AccessConfig:

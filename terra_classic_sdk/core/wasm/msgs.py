@@ -9,7 +9,7 @@ from typing import Optional, Union
 
 import attr
 from betterproto.lib.google.protobuf import Any as Any_pb
-from terra_proto.cosmwasm.wasm.v1 import MsgClearAdmin as MsgClearAdmin_pb
+from terra_proto.cosmwasm.wasm.v1 import MsgClearAdmin as MsgClearAdmin_pb, MsgInstantiateContract2 as MsgInstantiateContract2_pb
 from terra_proto.cosmwasm.wasm.v1 import MsgExecuteContract as MsgExecuteContract_pb
 from terra_proto.cosmwasm.wasm.v1 import (
     MsgInstantiateContract as MsgInstantiateContract_pb,
@@ -169,6 +169,97 @@ class MsgInstantiateContract(Msg):
             msg=parse_msg(proto.msg),
             funds=Coins.from_proto(proto.funds),
         )
+
+@attr.s
+class MsgInstantiateContract2(Msg):
+    """
+    Creates a new instance of a smart contract from existing code on the blockchain with predictable address.
+
+    Args:
+        sender: address of sender
+        admin: address of contract admin (optional)
+        code_id (int): code ID to use for instantiation
+        label (str): label for the contract.
+        msg (dict|str): InitMsg to initialize contract
+        funds (Coins): initial amount of coins to be sent to contract
+        salt (bytes): arbitrary value used in computing predictable address
+        fix_msg (bool): whether to include msg in address derivation
+    """
+
+    type_amino = "wasm/MsgInstantiateContract2"
+    """"""
+    type_url = "/cosmwasm.wasm.v1.MsgInstantiateContract2"
+    """"""
+    prototype = MsgInstantiateContract2_pb
+    """"""
+    salt: bytes = attr.ib()
+    sender: AccAddress = attr.ib()
+    admin: Optional[AccAddress] = attr.ib()
+    code_id: int = attr.ib(converter=int)
+    label: str = attr.ib(converter=str)
+    msg: Union[dict, str] = attr.ib()
+    funds: Coins = attr.ib(converter=Coins, factory=Coins)
+    fix_msg: bool = attr.ib(default=False)
+
+    def to_amino(self) -> dict:
+        return {
+            "type": self.type_amino,
+            "value": {
+                "sender": self.sender,
+                "admin": self.admin,
+                "code_id": str(self.code_id),
+                "label": self.label,
+                "msg": remove_none(self.msg),
+                "funds": self.funds.to_amino(),
+                "salt": base64.b64encode(self.salt).decode() if self.salt else "",
+                "fix_msg": self.fix_msg,
+            },
+        }
+    def to_json(self) -> str:
+        data = self.to_data()
+        # 对 salt 字段做 base64 编码（如果存在且是 bytes）
+        if "salt" in data and isinstance(data["salt"], bytes):
+            data["salt"] = base64.b64encode(data["salt"]).decode("utf-8")
+        return json.dumps(data)
+
+    @classmethod
+    def from_data(cls, data: dict) -> "MsgInstantiateContract2":
+        return cls(
+            sender=data.get("sender"),
+            admin=data.get("admin"),
+            code_id=data["code_id"],
+            label=data["label"],
+            msg=parse_msg(data["msg"]),
+            funds=Coins.from_data(data.get("funds", [])),
+            salt=base64.b64decode(data["salt"]) if data.get("salt") else b"",
+            fix_msg=data.get("fix_msg", False),
+        )
+
+    def to_proto(self) -> MsgInstantiateContract2_pb:
+        return MsgInstantiateContract2_pb(
+            sender=self.sender,
+            admin=self.admin,
+            code_id=self.code_id,
+            label=self.label,
+            msg=bytes(json.dumps(self.msg), "utf-8"),
+            funds=[coin.to_proto() for coin in self.funds],
+            salt=self.salt,
+            fix_msg=self.fix_msg,
+        )
+
+    @classmethod
+    def from_proto(cls, proto: MsgInstantiateContract2_pb) -> "MsgInstantiateContract2":
+        return cls(
+            sender=proto.sender,
+            admin=proto.admin,
+            code_id=proto.code_id,
+            label=proto.label,
+            msg=parse_msg(proto.msg),
+            funds=Coins.from_proto(proto.funds),
+            salt=proto.salt,
+            fix_msg=proto.fix_msg,
+        )
+
 
 
 @attr.s
