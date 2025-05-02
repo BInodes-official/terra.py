@@ -31,6 +31,12 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### 0.1.3.2
+feat(sdk): add new messages and update existing ones
+
+- Add MsgVote_v1beta1 to gov module- Add MsgCancelUnbondingDelegation to staking module
+- Add MsgInstantiateContract2 to wasm module- Update MsgGrantAuthorization in authz module
+- Update AccessConfig in wasm/data.py
 ### 0.1.3.1
 - fix(authz): update MsgExecAuthorized to properly handle 'msgs' field- Change 'msgs' field handling in MsgExecAuthorized.from_data
 ### 0.1.3
