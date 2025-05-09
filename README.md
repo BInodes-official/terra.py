@@ -31,6 +31,13 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### 0.1.4 (2025-05-09)
+feat(gov): add support for v1 and v1beta1 gov messages
+
+- Add MsgSubmitProposal and MsgDeposit classes for v1 and v1beta1
+- Update LCD client to support both v1 and v1beta1 gov messages
+- Add parse_content support for AddBurnTaxExemptionAddressProposal
+
 ### 0.1.3.2
 feat(sdk): add new messages and update existing ones
 
@@ -43,13 +50,7 @@ feat(sdk): add new messages and update existing ones
 - Fixed the problem of incorrect automatic gas calculation when the Fee was not set for TX transactions in the basic SDK.
 - Fixed the issue in the basic SDK where there were no query results when querying the vote list.
 - Add default LCD and Chain ID.
-### 0.1.1
-- Fixes for search_votes crossed events. 
-- Fixes for Tx's function can't run use auto gas,because of gasprice
-- Add query votes logic.
-- Add tx_vote's test py
-- Update some invalid links
-<br/>
+
 
 # Table of Contents
 
