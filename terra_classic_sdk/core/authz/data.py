@@ -136,7 +136,7 @@ class GenericAuthorization(Authorization):
 
     @classmethod
     def from_data(cls, data: dict) -> GenericAuthorization:
-        return cls(msg=data['value']["msg"])
+        return cls(msg=data["msg"])
 
     def to_proto(self) -> GenericAuthorization_pb:
         return GenericAuthorization_pb(msg=self.msg)
@@ -173,14 +173,14 @@ class AuthorizationGrant(JSONSerializable):
     def to_data(self) -> dict:
         return {
             "authorization": self.authorization.to_data(),
-            "expiration": to_isoformat(self.expiration),
+            "expiration": to_isoformat(self.expiration) if self.expiration else None,
         }
 
     @classmethod
     def from_data(cls, data: dict) -> AuthorizationGrant:
         return cls(
             authorization=Authorization.from_data(data["authorization"]),
-            expiration=parser.parse(data["expiration"]),
+            expiration=parser.parse(data["expiration"]) if data["expiration"] else None,
         )
 
     def to_proto(self) -> Grant_pb:
@@ -201,7 +201,7 @@ class AuthorizationGrant(JSONSerializable):
         value = amino["value"]
         return cls(
             authorization=Authorization.from_amino(value["authorization"]),
-            expiration=parser.parse(value["expiration"])
+            expiration=parser.parse(value["expiration"]) if data["expiration"] else None
         )
 
 

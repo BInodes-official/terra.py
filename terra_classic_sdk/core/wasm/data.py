@@ -119,34 +119,34 @@ class AccessConfig(JSONSerializable):
     permission: AccessType = attr.ib()
     """"""
 
-    address: AccAddress = attr.ib()
+    addresses: List[AccAddress] = attr.ib()
     """"""
 
     def to_amino(self) -> dict:
         return {
             "permission": convert_access_type_to_json(self.permission),
-            "address": self.address,
+            "addresses": self.addresses,
         }
 
     def to_data(self) -> dict:
         return {
             "permission": convert_access_type_to_json(self.permission),
-            "address": self.address,
+            "addresses": self.addresses,
         }
 
     def to_proto(self) -> AccessConfig_pb:
-        return AccessConfig_pb(permission=self.permission, address=self.address)
+        return AccessConfig_pb(permission=self.permission, addresses=self.addresses)
 
     @classmethod
     def from_data(cls, data: dict) -> AccessConfig:
         return cls(
             permission=convert_access_type_from_json(data["permission"]),
-            address=data["address"],
+            addresses=data.get("addresses", []),
         ) if data else None
 
     @classmethod
     def from_proto(cls, proto: AccessConfig_pb) -> AccessConfig:
-        return cls(permission=proto.permission, address=proto.address)
+        return cls(permission=proto.permission, addresses=proto.addresses)
 
 
 @attr.s

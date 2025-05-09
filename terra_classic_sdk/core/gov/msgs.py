@@ -27,6 +27,64 @@ class MsgSubmitProposal(Msg):
 
     type_amino = "gov/MsgSubmitProposal"
     """"""
+    type_url = "/cosmos.gov.v1.MsgSubmitProposal"
+    """"""
+    action = "submit_proposal"
+    """"""
+    prototype = MsgSubmitProposal_pb
+    """"""
+
+    initial_deposit: Coins = attr.ib(converter=Coins)
+    proposer: AccAddress = attr.ib()
+
+    def to_amino(self) -> dict:
+        return {
+            "type": self.type_amino,
+            "value": {
+                "initial_deposit": self.initial_deposit.to_amino(),
+                "proposer": self.proposer,
+            },
+        }
+
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "initial_deposit": self.initial_deposit.to_data(),
+            "proposer": self.proposer
+        }
+
+    @classmethod
+    def from_data(cls, data: dict) -> MsgSubmitProposal:
+        return cls(
+            initial_deposit=Coins.from_data(data["initial_deposit"]),
+            proposer=data["proposer"],
+        )
+
+    def to_proto(self) -> MsgSubmitProposal_pb:
+        return MsgSubmitProposal_pb(
+            initial_deposit=self.initial_deposit.to_proto(),
+            proposer=self.proposer,
+        )
+
+    @classmethod
+    def from_proto(cls, proto: MsgSubmitProposal_pb) -> MsgSubmitProposal:
+        return cls(
+            initial_deposit=Coins.from_proto(proto["initial_deposit"]),
+            proposer=proto["proposer"],
+        )
+
+@attr.s
+class MsgSubmitProposal_v1beta1(Msg):
+    """Submit the attached proposal with an initial deposit.
+
+    Args:
+        content (Content): type of proposal
+        initial_deposit (Coins): initial deposit for proposal made by proposer
+        proposer (AccAddress): proposal submitter
+    """
+
+    type_amino = "gov/MsgSubmitProposal"
+    """"""
     type_url = "/cosmos.gov.v1beta1.MsgSubmitProposal"
     """"""
     action = "submit_proposal"
@@ -84,7 +142,6 @@ class MsgSubmitProposal(Msg):
             proposer=proto["proposer"],
         )
 
-
 @attr.s
 class MsgDeposit(Msg):
     """Deposit funds for an active deposit-stage proposal.
@@ -97,7 +154,7 @@ class MsgDeposit(Msg):
 
     type_amino = "gov/MsgDeposit"
     """"""
-    type_url = "/cosmos.gov.v1beta1.MsgDeposit"
+    type_url = "/cosmos.gov.v1.MsgDeposit"
     """"""
     action = "deposit"
     """"""
@@ -148,7 +205,71 @@ class MsgDeposit(Msg):
             depositor=proto["depositor"],
             amount=Coins.from_proto(proto["amount"]),
         )
+    
+@attr.s
+class MsgDeposit_v1beta1(Msg):
+    """Deposit funds for an active deposit-stage proposal.
 
+    Args:
+        proposal_id (int): proposal number to deposit for
+        depositor (AccAddress): account making deposit
+        amount (Coins): amount to deposit
+    """
+
+    type_amino = "gov/MsgDeposit"
+    """"""
+    type_url = "/cosmos.gov.v1beta1.MsgDeposit"
+    """"""
+    action = "deposit"
+    """"""
+    prototype = MsgDeposit_pb
+    """"""
+
+    proposal_id: int = attr.ib(converter=int)
+    depositor: AccAddress = attr.ib()
+    amount: Coins = attr.ib(converter=Coins)
+
+    def to_amino(self) -> dict:
+        return {
+            "type": self.type_amino,
+            "value": {
+                "proposal_id": str(self.proposal_id),
+                "depositor": self.depositor,
+                "amount": self.amount.to_amino(),
+            },
+        }
+
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "proposal_id": str(self.proposal_id),
+            "depositor": self.depositor,
+            "amount": self.amount.to_data(),
+        }
+
+    @classmethod
+    def from_data(cls, data: dict) -> MsgDeposit:
+        return cls(
+            proposal_id=data["proposal_id"],
+            depositor=data["depositor"],
+            amount=Coins.from_data(data["amount"]),
+        )
+
+
+    def to_proto(self) -> MsgDeposit_pb:
+        return MsgDeposit_pb(
+            proposal_id=self.proposal_id,
+            depositor=self.depositor,
+            amount=self.amount.to_proto(),
+        )
+
+    @classmethod
+    def from_proto(cls, proto: MsgDeposit_pb) -> MsgDeposit:
+        return cls(
+            proposal_id=proto["proposal_id"],
+            depositor=proto["depositor"],
+            amount=Coins.from_proto(proto["amount"]),
+        )
 
 @attr.s
 class MsgVote(Msg):

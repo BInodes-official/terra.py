@@ -219,8 +219,8 @@ class MsgMultiSend(Msg):
     @classmethod
     def from_data(cls, data: dict) -> MsgMultiSend:
         return cls(
-            inputs=[MultiSendInput.from_data(x) for x in data['value']["inputs"]],
-            outputs=[MultiSendOutput.from_data(x) for x in data['value']["outputs"]],
+            inputs=[MultiSendInput.from_data(x) for x in data["inputs"]],
+            outputs=[MultiSendOutput.from_data(x) for x in data["outputs"]],
         )
 
     @classmethod

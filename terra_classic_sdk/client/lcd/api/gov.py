@@ -53,7 +53,7 @@ class AsyncGovAPI(BaseAsyncAPI):
     # keep it private
     async def __search_submit_proposal(self, proposal_id: int):
         params = [
-            ("message.action", "/cosmos.gov.v1.MsgSubmitProposal"),
+            # ("message.action", "/cosmos.gov.v1.MsgSubmitProposal"),
             ("submit_proposal.proposal_id", proposal_id),
         ]
 
@@ -61,7 +61,13 @@ class AsyncGovAPI(BaseAsyncAPI):
         txs = res.get("txs")
         if txs is None or len(txs) <= 0:
             raise Exception("failed to find submit proposal")
-        return txs[0]
+        else:
+            tx=txs[0]
+            if tx.get("body").get("messages")[0].get("@type") == "/cosmos.gov.v1.MsgSubmitProposal" or "/cosmos.gov.v1beta1.MsgSubmitProposal":
+                return tx
+            else:
+                raise Exception("failed to find submit proposal")
+
 
     # keep it private
     async def __search_deposits(
@@ -113,7 +119,7 @@ class AsyncGovAPI(BaseAsyncAPI):
         res = await self.__search_submit_proposal(proposal_id)
         msgs = res["body"]["messages"]
         for msg in msgs:
-            if msg.get("@type") == "/cosmos.gov.v1.MsgSubmitProposal":
+            if msg.get("@type") == "/cosmos.gov.v1.MsgSubmitProposal" or "/cosmos.gov.v1beta1.MsgSubmitProposal":
                 return msg["proposer"]
         return None
 
@@ -141,7 +147,7 @@ class AsyncGovAPI(BaseAsyncAPI):
         deposits = []
         for tx in res:
             for msg in tx.get("body").get("messages"):
-                if msg.get("@type") == "/cosmos.gov.v1.MsgDeposit":
+                if msg.get("@type") == "/cosmos.gov.v1.MsgDeposit" or "/cosmos.gov.v1beta1.MsgDeposit":
                     deposits.append(Deposit.from_data(msg))
         return deposits, pagination
 
@@ -197,7 +203,7 @@ class AsyncGovAPI(BaseAsyncAPI):
         for tx in res:
             for msg in tx.get("body").get("messages"):
                 if (
-                    msg.get("@type") == "/cosmos.gov.v1beta1.MsgVote"
+                    msg.get("@type") == "/cosmos.gov.v1beta1.MsgVote" or "/cosmos.gov.v1.MsgVote"
                     and int(msg.get("proposal_id")) == proposal_id
                 ):
                     votes.append(

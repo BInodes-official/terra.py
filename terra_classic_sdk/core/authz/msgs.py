@@ -200,9 +200,9 @@ class MsgRevokeAuthorization(Msg):
     @classmethod
     def from_data(cls, data: dict) -> MsgRevokeAuthorization:
         return cls(
-            granter=data["value"]["granter"],
-            grantee=data["value"]["grantee"],
-            msg_type_url=data["value"]["msg_type_url"],
+            granter=data["granter"],
+            grantee=data["grantee"],
+            msg_type_url=data["msg_type_url"],
         )
 
     def to_proto(self) -> MsgRevoke_pb:

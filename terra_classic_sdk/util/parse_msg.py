@@ -14,7 +14,8 @@ from terra_classic_sdk.core.distribution import (
     MsgWithdrawDelegatorReward,
     MsgWithdrawValidatorCommission,
 )
-from terra_classic_sdk.core.gov.msgs import MsgDeposit, MsgSubmitProposal, MsgVote, MsgVote_v1beta1
+from terra_classic_sdk.core.gov.msgs import MsgDeposit, MsgSubmitProposal, MsgVote, MsgVote_v1beta1, MsgDeposit_v1beta1, \
+    MsgSubmitProposal_v1beta1
 from terra_classic_sdk.core.ibc.msgs import (
     MsgAcknowledgement,
     MsgChannelCloseConfirm,
@@ -84,7 +85,7 @@ distribution_msgs = [
     MsgWithdrawDelegatorReward,
     MsgWithdrawValidatorCommission,
 ]
-gov_msgs = [MsgDeposit, MsgSubmitProposal, MsgVote,MsgVote_v1beta1]
+gov_msgs = [MsgDeposit, MsgSubmitProposal,MsgSubmitProposal_v1beta1, MsgVote,MsgVote_v1beta1,MsgDeposit_v1beta1]
 market_msgs = [MsgSwap, MsgSwapSend]
 authz_msgs = [
     MsgExecAuthorized,

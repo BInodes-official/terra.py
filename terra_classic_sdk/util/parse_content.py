@@ -5,6 +5,7 @@ from terra_classic_sdk.core.gov.proposals import TextProposal
 from terra_classic_sdk.core.params.proposals import ParameterChangeProposal
 from terra_classic_sdk.core.ibc.proposals import ClientUpdateProposal
 from terra_classic_sdk.core.wasm.proposals import MigrateContractProposal
+from terra_classic_sdk.core.treasury.proposals import AddBurnTaxExemptionAddressProposal
 
 from terra_classic_sdk.core.upgrade import (
     CancelSoftwareUpgradeProposal,
@@ -31,7 +32,8 @@ Content = Union[
     CancelSoftwareUpgradeProposal,
     ClientUpdateProposal,
     UpdateAdminProposal,
-    MigrateContractProposal
+    MigrateContractProposal,
+    AddBurnTaxExemptionAddressProposal,
 ]
 
 parse_content = create_demux(
@@ -43,7 +45,8 @@ parse_content = create_demux(
         CancelSoftwareUpgradeProposal,
         ClientUpdateProposal,
         UpdateAdminProposal,
-        MigrateContractProposal
+        MigrateContractProposal,
+        AddBurnTaxExemptionAddressProposal,
     ]
 )
 
@@ -56,7 +59,8 @@ parse_content_proto = create_demux_proto(
         CancelSoftwareUpgradeProposal,
         ClientUpdateProposal,
         UpdateAdminProposal,
-        MigrateContractProposal
+        MigrateContractProposal,
+        AddBurnTaxExemptionAddressProposal
     ]
 )
 """
