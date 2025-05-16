@@ -31,6 +31,14 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### 0.1.5 (2025-05-16)
+feat(core): add MsgUpdateContractAdmin and improve message handling
+
+- Add MsgUpdateContractAdmin class to support updating contract admin
+- Improve message parsing and handling for various modules
+- Add to_data() methods for proposal classes
+- Update __init__ and parse_msg files to include new message type
+
 ### 0.1.4 (2025-05-09)
 feat(gov): add support for v1 and v1beta1 gov messages
 
