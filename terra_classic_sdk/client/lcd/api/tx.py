@@ -1,5 +1,6 @@
 import base64
 import copy
+import json
 from typing import List, Optional
 
 import attr
@@ -259,7 +260,6 @@ class AsyncTxAPI(BaseAsyncAPI):
         self, tx: Tx, mode: str, options: BroadcastOptions = None
     ) -> dict:
         data = {"tx_bytes": await super()._try_await(self.encode(tx)), "mode": mode}
-        print('data',data)
         return await self._c._post("/cosmos/tx/v1beta1/txs", data)  # , raw=True)
 
     async def broadcast_sync(

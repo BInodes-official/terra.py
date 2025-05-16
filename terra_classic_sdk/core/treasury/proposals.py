@@ -36,6 +36,14 @@ class AddBurnTaxExemptionAddressProposal(JSONSerializable):
             addresses=data["addresses"],
         )
 
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "title": self.title,
+            "description": self.description,
+            "addresses": self.addresses,
+        }
+
     @classmethod
     def from_proto(cls, proto: AddBurnTaxExemptionAddressProposal_pb) -> AddBurnTaxExemptionAddressProposal:
         return cls(

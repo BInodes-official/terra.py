@@ -48,6 +48,14 @@ class SoftwareUpgradeProposal(JSONSerializable):
             plan=Plan.from_data(data["plan"]) if data.get("plan") else None,
         )
 
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "title": self.title,
+            "description": self.description,
+            "plan": self.plan.to_data() if self.plan else None,
+        }
+
     def to_proto(self) -> SoftwareUpgradeProposal_pb:
         return SoftwareUpgradeProposal_pb(
             title=self.title,

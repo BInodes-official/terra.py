@@ -6,6 +6,7 @@ from .msgs import (
     MsgStoreCode,
     MsgUpdateAdmin,
     MsgInstantiateContract2,
+    MsgUpdateContractAdmin
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "MsgUpdateAdmin",
     "MsgClearAdmin",
     "MsgInstantiateContract2",
+    "MsgUpdateContractAdmin"
 ]

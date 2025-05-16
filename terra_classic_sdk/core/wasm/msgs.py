@@ -36,6 +36,8 @@ __all__ = [
 def parse_msg(msg: Union[dict, str, bytes]) -> dict:
     if type(msg) is dict:
         return msg
+    elif type(msg) is int:
+        return {"code_id":msg}
     return json.loads(msg)
 
 
@@ -477,5 +479,64 @@ class MsgClearAdmin(Msg):
     def from_proto(cls, proto: MsgClearAdmin_pb) -> MsgClearAdmin:
         return cls(
             sender=proto.sender,
+            contract=proto.contract,
+        )
+
+from terra_proto.terra.wasm.v1beta1 import MsgUpdateContractAdmin as MsgUpdateContractAdmin_pb
+@attr.s
+class MsgUpdateContractAdmin(Msg):
+    """
+    Update a smart contract's admin in the v1beta1 module.
+
+    Args:
+        admin: address of current admin (sender)
+        new_admin: address of new admin
+        contract: address of contract to change
+    """
+
+    type_amino = "wasm/MsgUpdateContractAdmin"
+    type_url = "/terra.wasm.v1beta1.MsgUpdateContractAdmin"
+    prototype = MsgUpdateContractAdmin_pb
+
+    admin: AccAddress = attr.ib()
+    new_admin: AccAddress = attr.ib()
+    contract: AccAddress = attr.ib()
+
+    def to_amino(self) -> dict:
+        return {
+            "type": self.type_amino,
+            "value": {
+                "admin": self.admin,
+                "new_admin": self.new_admin,
+                "contract": self.contract,
+            },
+        }
+
+    @classmethod
+    def from_data(cls, data: dict) -> MsgUpdateContractAdmin:
+        return cls(
+            admin=data["admin"],
+            new_admin=data["new_admin"],
+            contract=data["contract"],
+        )
+
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "admin": self.admin,
+            "new_admin": self.new_admin,
+            "contract": self.contract,
+        }
+
+    def to_proto(self) -> MsgUpdateContractAdmin_pb:
+        return MsgUpdateContractAdmin_pb(
+            admin=self.admin, new_admin=self.new_admin, contract=self.contract
+        )
+
+    @classmethod
+    def from_proto(cls, proto: MsgUpdateContractAdmin_pb) -> MsgUpdateContractAdmin:
+        return cls(
+            admin=proto.admin,
+            new_admin=proto.new_admin,
             contract=proto.contract,
         )

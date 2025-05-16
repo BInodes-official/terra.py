@@ -39,6 +39,13 @@ class TextProposal(JSONSerializable):
     def from_data(cls, data: dict) -> TextProposal:
         return cls(title=data["title"], description=data["description"])
 
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "title": self.title,
+            "description": self.description
+        }
+
     def to_proto(self) -> TextProposal_pb:
         return TextProposal_pb(title=self.title, description=self.description)
 

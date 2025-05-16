@@ -92,6 +92,7 @@ class ParameterChangeProposal(JSONSerializable):
 
     def to_data(self) -> dict:
         return {
+            "@type": self.type_url,
             "title": self.title,
             "description": self.description,
             "changes": [change.to_data() for change in self.changes],

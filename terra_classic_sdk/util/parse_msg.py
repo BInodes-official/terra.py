@@ -59,7 +59,9 @@ from terra_classic_sdk.core.wasm import (
     MsgMigrateContract,
     MsgStoreCode,
     MsgUpdateAdmin,
-    MsgInstantiateContract2
+    MsgInstantiateContract2,
+    MsgUpdateContractAdmin
+
 )
 from terra_classic_sdk.core.feegrant import (
     MsgGrantAllowance,
@@ -115,6 +117,8 @@ wasm_msgs = [
     MsgUpdateAdmin,
     MsgClearAdmin,
     MsgInstantiateContract2,
+    MsgUpdateContractAdmin
+
 ]
 feegrant_msgs = [
     MsgGrantAllowance,

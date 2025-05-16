@@ -46,6 +46,15 @@ class ClientUpdateProposal(JSONSerializable):
             substitute_client_id=data["substitute_client_id"]
         )
 
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "title": self.title,
+            "description": self.description,
+            "subject_client_id": self.subject_client_id,
+            "substitute_client_id": self.substitute_client_id,
+        }
+
     def to_proto(self) -> ClientUpdateProposal_pb:
         return ClientUpdateProposal_pb(
             title=self.title,

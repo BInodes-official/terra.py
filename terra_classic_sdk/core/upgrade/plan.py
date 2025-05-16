@@ -43,6 +43,18 @@ class Plan(JSONSerializable):
             upgrade_client_state=data["upgrade_client_state"] if data.get("upgrade_client_state") else None,
         )
 
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "name": self.name,
+            "height": self.height,
+            "info": self.info,
+            "time": self.time.isoformat() if self.time else None,
+            "upgrade_client_state": self.upgrade_client_state.to_data()
+            if self.upgrade_client_state
+            else None,
+        }
+
     def to_proto(self) -> Plan_pb:
         ucs = self.upgrade_client_state
         if ucs is not None:
