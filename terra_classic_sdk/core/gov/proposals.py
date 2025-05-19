@@ -6,13 +6,14 @@ import attr
 from betterproto.lib.google.protobuf import Any as Any_pb
 from terra_proto.cosmos.gov.v1beta1 import TextProposal as TextProposal_pb
 
+from terra_classic_sdk.core import AccAddress
 from terra_classic_sdk.util.json import JSONSerializable
 
-__all__ = ["TextProposal"]
+__all__ = ["ExecLegacyContentProposal"]
 
 
 @attr.s
-class TextProposal(JSONSerializable):
+class ExecLegacyContentProposal(JSONSerializable):
     """Generic proposal type with only title and description that does nothing if
     passed. Primarily used for assessing the community sentiment around the proposal.
 
@@ -23,27 +24,26 @@ class TextProposal(JSONSerializable):
 
     type_amino = "gov/TextProposal"
     """"""
-    type_url = "/cosmos.gov.v1beta1.TextProposal"
+    type_url = "/cosmos.gov.v1.MsgExecLegacyContent"
     """"""
-
-    title: str = attr.ib()
-    description: str = attr.ib()
+    content:dict=attr.ib()
+    authority:AccAddress = attr.ib()
 
     def to_amino(self) -> dict:
         return {
             "type": self.type_amino,
-            "value": {"title": self.title, "description": self.description},
+            "value": {"content":self.content,"authority":self.authority},
         }
 
     @classmethod
-    def from_data(cls, data: dict) -> TextProposal:
-        return cls(title=data["title"], description=data["description"])
+    def from_data(cls, data: dict) -> ExecLegacyContentProposal:
+        return cls(content=data["content"],authority=data["authority"] if "authority" in data.keys() else "")
 
     def to_data(self) -> dict:
         return {
             "@type": self.type_url,
-            "title": self.title,
-            "description": self.description
+            "content":self.content,
+            "authority":self.authority
         }
 
     def to_proto(self) -> TextProposal_pb:

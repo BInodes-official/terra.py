@@ -59,7 +59,7 @@ class MsgChannelOpenInit(Msg):
     def from_data(cls, data: dict) -> MsgChannelOpenInit:
         return cls(
             port_id=data["port_id"],
-            channel=Channel.from_data(data["port_id"]),
+            channel=Channel.from_data(data["channel"]),
             signer=data["signer"],
         )
 
@@ -135,7 +135,7 @@ class MsgChannelOpenTry(Msg):
             signer=proto.signer,
         )
 
-
+@attr.s
 class MsgChannelOpenAck(Msg):
     """
     MsgChannelOpenAck defines a msg sent by a Relayer to Chain A to acknowledge

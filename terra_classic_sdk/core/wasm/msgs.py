@@ -27,6 +27,7 @@ __all__ = [
     "MsgStoreCode",
     "MsgInstantiateContract",
     "MsgExecuteContract",
+    "MsgExecuteContract_vbeta1",
     "MsgMigrateContract",
     "MsgUpdateAdmin",
     "MsgClearAdmin",
@@ -325,6 +326,74 @@ class MsgExecuteContract(Msg):
             coins=(proto.funds),
         )
 
+@attr.s
+class MsgExecuteContract_vbeta1(Msg):
+    """Execute a state-mutating function on a smart contract.
+
+    Args:
+        sender: address of sender
+        contract: address of contract to execute function on
+        msg (dict|str): ExecuteMsg to pass
+        coins: coins to be sent, if needed by contract to execute.
+            Defaults to empty ``Coins()``
+    """
+
+    type_amino = "wasm/MsgExecuteContract"
+    """"""
+    type_url = "/terra.wasm.v1beta1.MsgExecuteContract"
+    """"""
+    prototype = MsgExecuteContract_pb
+    """"""
+
+    sender: AccAddress = attr.ib()
+    contract: AccAddress = attr.ib()
+    execute_msg: Union[dict, str] = attr.ib()
+    coins: Coins = attr.ib(converter=Coins, factory=Coins)
+
+    def to_amino(self) -> dict:
+        return {
+            "type": self.type_amino,
+            "value": {
+                "sender": self.sender,
+                "contract": self.contract,
+                "execute_msg": remove_none(self.msg),
+                "coins": self.coins.to_amino(),
+            },
+        }
+
+    @classmethod
+    def from_data(cls, data: dict) -> MsgExecuteContract:
+        return cls(
+            sender=data["sender"],
+            contract=data["contract"],
+            execute_msg=parse_msg(data["execute_msg"]),
+            coins=Coins.from_data(data["coins"]),
+        )
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "sender": self.sender,
+            "contract": self.contract,
+            "execute_msg": self.execute_msg,
+            "coins": self.coins.to_data(),
+        }
+
+    def to_proto(self) -> MsgExecuteContract_pb:
+        return MsgExecuteContract_pb(
+            sender=self.sender,
+            contract=self.contract,
+            execute_msg=bytes(json.dumps(self.execute_msg), "utf-8"),
+            funds=self.coins.to_proto(),
+        )
+
+    @classmethod
+    def from_proto(cls, proto: MsgExecuteContract_pb) -> MsgExecuteContract:
+        return cls(
+            sender=proto.sender,
+            contract=proto.contract,
+            execute_msg=parse_msg(proto.execute_msg),
+            coins=(proto.funds),
+        )
 
 @attr.s
 class MsgMigrateContract(Msg):

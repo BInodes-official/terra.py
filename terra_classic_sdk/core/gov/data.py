@@ -1,11 +1,12 @@
 """Gov module data types."""
 
 from __future__ import annotations
+
+import json
 from datetime import datetime
 from typing import List
 import attr
 from dateutil import parser
-
 from terra_proto.cosmos.gov.v1beta1 import Proposal as Proposal_pb, ProposalStatus
 from terra_proto.cosmos.gov.v1beta1 import TallyResult as TallyResult_pb
 from terra_proto.cosmos.gov.v1beta1 import Vote as Vote_pb
@@ -15,9 +16,9 @@ from terra_proto.cosmos.gov.v1beta1 import WeightedVoteOption as WeightedVoteOpt
 from terra_classic_sdk.core import AccAddress, Coins
 from terra_classic_sdk.util.json import JSONSerializable
 from terra_classic_sdk.util.converter import to_isoformat
-from terra_classic_sdk.util.parse_content import parse_content, Content
+from terra_classic_sdk.util.parse_proposal_msg import ProposalMsg,parse_proposal_msg
 
-__all__ = ["Proposal", "Content", "VoteOption", "WeightedVoteOption", "ProposalStatus"]
+__all__ = ["Proposal", "ProposalMsg", "VoteOption", "WeightedVoteOption", "ProposalStatus"]
 
 
 @attr.s
@@ -68,7 +69,7 @@ class Proposal(JSONSerializable):
     proposal_id: int = attr.ib(converter=int)
     """Proposal's ID."""
 
-    content: Content = attr.ib()
+    proposal_msgs: list[ProposalMsg] = attr.ib()
     """Proposal contents."""
 
     status: str = attr.ib()
@@ -92,10 +93,22 @@ class Proposal(JSONSerializable):
     voting_end_time: datetime = attr.ib()
     """Time at which voting period ended, or will end."""
 
+    metadata: str = attr.ib()
+    """metadata of proposal."""
+
+    title: str = attr.ib()
+    """title of proposal."""
+
+    summary: str = attr.ib()
+    """description of proposal."""
+
+    proposer:AccAddress=attr.ib()
+    """proposer of proposal."""
+
     def to_amino(self) -> dict:
         return {
             "proposal_id": str(self.proposal_id),
-            "content": self.content.to_amino(),
+            "proposal_msgs": [x.to_amino() for x in self.proposal_msgs],
             "status": self.status,
             "final_tally_result": self.final_tally_result.to_amino(),
             "submit_time": to_isoformat(self.submit_time),
@@ -103,49 +116,43 @@ class Proposal(JSONSerializable):
             "total_deposit": self.total_deposit.to_amino(),
             "voting_start_time": to_isoformat(self.voting_start_time),
             "voting_end_time": to_isoformat(self.voting_end_time),
+            "metadata": self.metadata,
+            "title": self.title,
+            "summary": self.summary,
+            "proposer": self.proposer
         }
 
     @classmethod
     def from_data(cls, data: dict) -> Proposal:
-
         if data["voting_start_time"] is None:
             voting_start_time = ""
         else:    
-            voting_start_time = parser.parse(str(data["voting_start_time"]))
+            voting_start_time = parser.parse(data["voting_start_time"])
         
         if data["voting_end_time"] is None:
             voting_end_time = ""
         else:
-            voting_end_time = parser.parse(str(data["voting_end_time"]))
-        
-        # We need to convert the 0.47 message format into what is expected
-        # This isn't perfect, but for the moment we'll assume all proposals are TextProposals.
-        # @TODO: The 0.47 system doesn't seem to indicate what type of proposal anything is.
-        data['@type'] = '/cosmos.gov.v1beta1.TextProposal'
-        data['messages'].append({})
-        data['messages'][0]['content'] = {}
-        data['messages'][0]['content']['@type'] = data['@type']
-        data['messages'][0]['content']['title'] = data['title']
-        data['messages'][0]['content']['description'] = data['summary']
-        #data['messages'][0]['content']['recipient'] = data['messages'][0]['recipient']
-        #data['messages'][0]['content']['amount'] = data['messages'][0]['amount']
+            voting_end_time = parser.parse(data["voting_end_time"])
 
         return cls(
             proposal_id=data["id"],
-            content=parse_content(data['messages'][0]["content"]),
+            proposal_msgs=[parse_proposal_msg(x) for x in data['messages']] if data['messages'] else [],
             status=data["status"],
             final_tally_result=data["final_tally_result"],
             submit_time=parser.parse(data["submit_time"]),
             deposit_end_time=parser.parse(data["deposit_end_time"]),
             total_deposit=Coins.from_data(data["total_deposit"]),
             voting_start_time=voting_start_time,
-            voting_end_time=voting_end_time
+            voting_end_time=voting_end_time,
+            metadata=data['metadata'],
+            title=data['title'],
+            summary=data['summary'],
+            proposer=data['proposer']
         )
 
     def to_proto(self) -> Proposal_pb:
         return Proposal_pb(
             proposal_id=self.proposal_id,
-            content=self.content.pack_any(),
             status=ProposalStatus.from_str(self.status),
             final_tally_result=self.final_tally_result.to_proto(),
             submit_time=self.submit_time,

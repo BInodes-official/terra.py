@@ -7,6 +7,7 @@ __all__ = ["SoftwareUpgradeProposal", "CancelSoftwareUpgradeProposal"]
 from typing import Optional
 
 import attr
+from terra_classic_sdk.core import AccAddress, Coins
 from betterproto.lib.google.protobuf import Any as Any_pb
 from terra_proto.cosmos.upgrade.v1beta1 import (
     CancelSoftwareUpgradeProposal as CancelSoftwareUpgradeProposal_pb,
@@ -21,45 +22,40 @@ from terra_classic_sdk.util.json import JSONSerializable
 
 @attr.s
 class SoftwareUpgradeProposal(JSONSerializable):
-    title: str = attr.ib()
-    description: str = attr.ib()
+    authority:AccAddress=attr.ib()
     plan: Optional[Plan] = attr.ib()
 
     type_amino = "upgrade/SoftwareUpgradeProposal"
     """"""
-    type_url = "/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal"
+    type_url = "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade"
     """"""
 
     def to_amino(self) -> dict:
         return {
             "type": self.type_amino,
             "value": {
-                "title": self.title,
-                "description": self.description,
                 "plan": self.plan.to_amino() if self.plan else None,
+                "authority": self.authority,
             },
         }
 
     @classmethod
     def from_data(cls, data: dict) -> SoftwareUpgradeProposal:
         return cls(
-            title=data["title"],
-            description=data["description"],
+            authority=data["authority"],
             plan=Plan.from_data(data["plan"]) if data.get("plan") else None,
         )
 
     def to_data(self) -> dict:
         return {
             "@type": self.type_url,
-            "title": self.title,
-            "description": self.description,
+            "authority":self.authority,
             "plan": self.plan.to_data() if self.plan else None,
         }
 
     def to_proto(self) -> SoftwareUpgradeProposal_pb:
         return SoftwareUpgradeProposal_pb(
-            title=self.title,
-            description=self.description,
+            authority=self.authority,
             plan=(self.plan.to_proto() if self.plan else None),
         )
 
@@ -69,8 +65,7 @@ class SoftwareUpgradeProposal(JSONSerializable):
     @classmethod
     def from_proto(cls, proto: SoftwareUpgradeProposal_pb) -> SoftwareUpgradeProposal:
         return cls(
-            title=proto.title,
-            description=proto.description,
+            authority=proto.authority,
             plan=Plan.from_proto(proto.plan) if proto.plan else None,
         )
 

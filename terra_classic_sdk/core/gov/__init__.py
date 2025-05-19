@@ -1,18 +1,18 @@
 from terra_proto.cosmos.gov.v1beta1 import ProposalStatus
 
-from .data import Content, Proposal, VoteOption, WeightedVoteOption
+from .data import ProposalMsg, Proposal, VoteOption, WeightedVoteOption
 from .msgs import MsgDeposit, MsgSubmitProposal, MsgVote,MsgVote_v1beta1,MsgDeposit_v1beta1
-from .proposals import TextProposal
+from .proposals import ExecLegacyContentProposal
 
 __all__ = [
-    "Content",
+    "ProposalMsg",
     "MsgDeposit",
     "MsgDeposit_v1beta1",
     "MsgSubmitProposal",
     "MsgVote",
     "MsgVote_v1beta1",
     "Proposal",
-    "TextProposal",
+    "ExecLegacyContentProposal",
     "ProposalStatus",
     "VoteOption",
     "WeightedVoteOption",

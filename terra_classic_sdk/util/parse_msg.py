@@ -54,6 +54,7 @@ from terra_classic_sdk.core.staking import (
 from terra_classic_sdk.core.wasm import (
     MsgClearAdmin,
     MsgExecuteContract,
+    MsgExecuteContract_vbeta1,
     MsgInstantiateContract,
     #MsgMigrateCode,
     MsgMigrateContract,
@@ -113,6 +114,7 @@ wasm_msgs = [
     #MsgMigrateCode,
     MsgInstantiateContract,
     MsgExecuteContract,
+    MsgExecuteContract_vbeta1,
     MsgMigrateContract,
     MsgUpdateAdmin,
     MsgClearAdmin,

@@ -304,23 +304,21 @@ class MigrateContractProposal(JSONSerializable):
     """
 
     type_amino = "wasm/MigrateContractProposal"
-    type_url = "/cosmwasm.wasm.v1.MigrateContractProposal"
+    type_url = "/cosmwasm.wasm.v1.MsgMigrateContract"
     prototype = MigrateContractProposal_pb
 
-    title: str = attr.ib()
-    description: str = attr.ib()
+    sender: AccAddress = attr.ib()
     contract: AccAddress = attr.ib()
-    new_code_id: int = attr.ib()
+    code_id: int = attr.ib()
     migrate_msg: Union[dict, str] = attr.ib()
 
     def to_amino(self) -> dict:
         return {
             "type": self.type_amino,
             "value": {
-                "title": self.title,
-                "description": self.description,
+                "sender": self.sender,
                 "contract": self.contract,
-                "new_code_id": self.new_code_id,
+                "code_id": self.code_id,
                 "migrate_msg": remove_none(self.migrate_msg),
             },
         }
@@ -328,19 +326,17 @@ class MigrateContractProposal(JSONSerializable):
     def to_data(self) -> dict:
         return {
             "@type": self.type_url,
-            "title": self.title,
-            "description": self.description,
             "contract": self.contract,
-            "new_code_id": self.new_code_id,
+            "sender":self.sender,
+            "code_id": self.code_id,
             "migrate_msg": remove_none(self.migrate_msg),
         }
 
     def to_proto(self) -> MigrateContractProposal:
         return MigrateContractProposal_pb(
-            title=self.title,
-            description=self.description,
+            sender=self.sender,
             contract=self.contract,
-            new_code_id=self.new_code_id,
+            code_id=self.code_id,
             migrate_msg=bytes(json.dumps(self.migrate_msg), "utf-8"),
         )
 
@@ -350,18 +346,16 @@ class MigrateContractProposal(JSONSerializable):
     @classmethod
     def from_data(cls, data):
         return cls(
-            title=data["title"],
-            description=data["description"],
+            sender=data["sender"],
             contract=data["contract"],
-            new_code_id=data["code_id"],
+            code_id=data["code_id"],
             migrate_msg=parse_msg(data["msg"]),
         )
 
     @classmethod
     def from_proto(cls, proto: MigrateContractProposal_pb):
         return cls(
-            title=proto.title,
-            description=proto.description,
+            sender=proto.sender,
             contract=proto.contract,
             new_code_id=proto.code_id,
             migrate_msg=parse_msg(proto.msg),

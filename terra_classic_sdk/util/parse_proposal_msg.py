@@ -1,7 +1,7 @@
 from typing import Union
 
-from terra_classic_sdk.core.distribution.proposals import MsgCommunityPoolSpend
-from terra_classic_sdk.core.gov.proposals import TextProposal
+from terra_classic_sdk.core.distribution.proposals import MsgCommunityPoolSpend,MsgUpdateParams
+from terra_classic_sdk.core.gov.proposals import ExecLegacyContentProposal
 from terra_classic_sdk.core.params.proposals import ParameterChangeProposal
 from terra_classic_sdk.core.ibc.proposals import ClientUpdateProposal
 from terra_classic_sdk.core.wasm.proposals import MigrateContractProposal
@@ -24,9 +24,10 @@ from terra_proto.ibc.core.client.v1 import ClientUpdateProposal as ClientUpdateP
 
 from .base import create_demux, create_demux_proto
 
-Content = Union[
-    TextProposal,
+ProposalMsg = Union[
+    ExecLegacyContentProposal,
     MsgCommunityPoolSpend,
+    MsgUpdateParams,
     ParameterChangeProposal,
     SoftwareUpgradeProposal,
     CancelSoftwareUpgradeProposal,
@@ -36,10 +37,11 @@ Content = Union[
     AddBurnTaxExemptionAddressProposal,
 ]
 
-parse_content = create_demux(
+parse_proposal_msg = create_demux(
     [
         MsgCommunityPoolSpend,
-        TextProposal,
+        ExecLegacyContentProposal,
+        MsgUpdateParams,
         ParameterChangeProposal,
         SoftwareUpgradeProposal,
         CancelSoftwareUpgradeProposal,
@@ -50,10 +52,11 @@ parse_content = create_demux(
     ]
 )
 
-parse_content_proto = create_demux_proto(
+parse_proposal_msg_proto = create_demux_proto(
     [
         MsgCommunityPoolSpend,
-        TextProposal,
+        ExecLegacyContentProposal,
+        MsgUpdateParams,
         ParameterChangeProposal,
         SoftwareUpgradeProposal,
         CancelSoftwareUpgradeProposal,

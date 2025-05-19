@@ -45,6 +45,11 @@ class Counterparty(JSONSerializable):
             channel_id=proto.channel_id,
         )
 
+def convert_state_from_string(value: str) -> State:
+    return State[value]
+
+def convert_order_from_string(value: str) -> Order:
+    return Order[value]
 
 @attr.s
 class Channel(JSONSerializable):
@@ -54,8 +59,8 @@ class Channel(JSONSerializable):
     sending packets and one end capable of receiving packets.
     """
 
-    state: State = attr.ib(converter=int)
-    ordering: Order = attr.ib(converter=int)
+    state: State = attr.ib(converter=convert_state_from_string)
+    ordering: Order = attr.ib(converter=convert_order_from_string)
     counterparty: Counterparty = attr.ib()
     connection_hops: List[str] = attr.ib(converter=list)
     version: str = attr.ib()

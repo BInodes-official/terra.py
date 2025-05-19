@@ -1,3 +1,4 @@
+import json
 from typing import List, Optional
 
 from terra_classic_sdk.core import Coins, Dec
@@ -106,22 +107,24 @@ class AsyncGovAPI(BaseAsyncAPI):
             raise Exception("failed to find vote txs")
         return txs, res.get("pagination")
 
-    async def proposer(self, proposal_id: int) -> str:
-        """Fetches the proposer of a proposal.
-
-        Args:
-            proposal_id (int): proposal ID
-
-        Returns:
-            str: proposal's proposer, None if proposal is not exist
-        """
-
-        res = await self.__search_submit_proposal(proposal_id)
-        msgs = res["body"]["messages"]
-        for msg in msgs:
-            if msg.get("@type") == "/cosmos.gov.v1.MsgSubmitProposal" or "/cosmos.gov.v1beta1.MsgSubmitProposal":
-                return msg["proposer"]
-        return None
+    # 2025/5/18  V0.47 can get proposer via function: proposal. so we don't need this function
+    # async def proposer(self, proposal_id: int) -> str:
+    #     """Fetches the proposer of a proposal.
+    #
+    #     Args:
+    #         proposal_id (int): proposal ID
+    #
+    #     Returns:
+    #         str: proposal's proposer, None if proposal is not exist
+    #     """
+    #
+    #     res = await self.__search_submit_proposal(proposal_id)
+    #     msgs = res["body"]["messages"]
+    #     for msg in msgs:
+    #         if msg.get("@type") == "/cosmos.gov.v1.MsgSubmitProposal" or "/cosmos.gov.v1beta1.MsgSubmitProposal":
+    #             if "proposer" in msg.keys():
+    #                 return msg["proposer"]
+    #     return ''
 
     async def deposits(self, proposal_id: int, params: Optional[APIParams] = None):
         """Fetches the deposit information about a proposal.
@@ -296,11 +299,11 @@ class GovAPI(AsyncGovAPI):
 
     proposal.__doc__ = AsyncGovAPI.proposal.__doc__
 
-    @sync_bind(AsyncGovAPI.proposer)
-    def proposer(self, proposal_id: int) -> str:
-        pass
+    # @sync_bind(AsyncGovAPI.proposer)
+    # def proposer(self, proposal_id: int) -> str:
+    #     pass
 
-    proposer.__doc__ = AsyncGovAPI.proposer.__doc__
+    # proposer.__doc__ = AsyncGovAPI.proposer.__doc__
 
     @sync_bind(AsyncGovAPI.deposits)
     def deposits(self, proposal_id: int, params: Optional[APIParams] = None):

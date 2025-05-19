@@ -10,7 +10,7 @@ from terra_proto.cosmos.gov.v1beta1 import MsgVote as MsgVote_pb
 from terra_classic_sdk.core import AccAddress, Coins
 from terra_classic_sdk.core.msg import Msg
 
-from .data import Content, VoteOption
+from .data import ProposalMsg, VoteOption
 
 __all__ = ["MsgSubmitProposal", "MsgDeposit", "MsgVote"]
 
@@ -92,7 +92,7 @@ class MsgSubmitProposal_v1beta1(Msg):
     prototype = MsgSubmitProposal_pb
     """"""
 
-    content: Content = attr.ib()
+    content: ProposalMsg = attr.ib()
     initial_deposit: Coins = attr.ib(converter=Coins)
     proposer: AccAddress = attr.ib()
 
@@ -205,7 +205,7 @@ class MsgDeposit(Msg):
             depositor=proto["depositor"],
             amount=Coins.from_proto(proto["amount"]),
         )
-    
+
 @attr.s
 class MsgDeposit_v1beta1(Msg):
     """Deposit funds for an active deposit-stage proposal.
