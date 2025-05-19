@@ -31,6 +31,15 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### 0.1.6 2025-05-19
+refactor(gov): update proposal handling for v0.47
+
+- Rename Content to ProposalMsg
+- Update Proposal data structure to use ProposalMsg- Modify MsgSubmitProposal to use ProposalMsg
+- Update LCD API to use new proposal structure
+- Rename parse_content to parse_proposal_msg
+- Update related proposals in distribution and wasm modules
+
 ### 0.1.5 (2025-05-16)
 feat(core): add MsgUpdateContractAdmin and improve message handling
 
