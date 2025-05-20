@@ -88,13 +88,11 @@ class MsgUpdateParams(JSONSerializable):
     """Proposal for allocating funds from the community pool to an address.
 
     Args:
-        title: proposal title
-        description: proposal description
-        recipient: designated recipient of funds if proposal passes
-        amount (Coins): amount to spend from community pool
+        authority: the address that controls the module
+        params: defines the x/distribution parameters to update
     """
 
-    type_amino = "distribution/MsgCommunityPoolSpend"
+    type_amino = "distribution/MsgUpdateParams"
     """"""
     type_url = "/cosmos.distribution.v1beta1.MsgUpdateParams"
     """"""

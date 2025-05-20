@@ -45,7 +45,6 @@ class Plan(JSONSerializable):
 
     def to_data(self) -> dict:
         return {
-            "@type": self.type_url,
             "name": self.name,
             "height": self.height,
             "info": self.info,

@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from typing import Union
+
 import attr
 from terra_proto.cosmos.gov.v1beta1 import MsgDeposit as MsgDeposit_pb
 from terra_proto.cosmos.gov.v1beta1 import MsgSubmitProposal as MsgSubmitProposal_pb
@@ -13,6 +16,8 @@ from terra_classic_sdk.core.msg import Msg
 from .data import ProposalMsg, VoteOption
 
 __all__ = ["MsgSubmitProposal", "MsgDeposit", "MsgVote"]
+
+from ...util.converter import try_json_loads
 
 
 @attr.s
@@ -36,6 +41,10 @@ class MsgSubmitProposal(Msg):
 
     initial_deposit: Coins = attr.ib(converter=Coins)
     proposer: AccAddress = attr.ib()
+    messages:list=attr.ib()
+    title:str=attr.ib()
+    summary:str=attr.ib()
+    metadata: Union[dict, str]=attr.ib()
 
     def to_amino(self) -> dict:
         return {
@@ -43,6 +52,10 @@ class MsgSubmitProposal(Msg):
             "value": {
                 "initial_deposit": self.initial_deposit.to_amino(),
                 "proposer": self.proposer,
+                "messages": self.messages,
+                "title": self.title,
+                "summary": self.summary,
+                "metadata": self.metadata,
             },
         }
 
@@ -50,7 +63,11 @@ class MsgSubmitProposal(Msg):
         return {
             "@type": self.type_url,
             "initial_deposit": self.initial_deposit.to_data(),
-            "proposer": self.proposer
+            "proposer": self.proposer,
+            "messages": self.messages,
+            "title": self.title,
+            "summary": self.summary,
+            "metadata": self.metadata,
         }
 
     @classmethod
@@ -58,12 +75,16 @@ class MsgSubmitProposal(Msg):
         return cls(
             initial_deposit=Coins.from_data(data["initial_deposit"]),
             proposer=data["proposer"],
+            messages=data["messages"],
+            title=data["title"],
+            summary=data["summary"],
+            metadata=try_json_loads(data["metadata"])
         )
 
     def to_proto(self) -> MsgSubmitProposal_pb:
         return MsgSubmitProposal_pb(
             initial_deposit=self.initial_deposit.to_proto(),
-            proposer=self.proposer,
+            proposer=self.proposer
         )
 
     @classmethod
@@ -92,7 +113,7 @@ class MsgSubmitProposal_v1beta1(Msg):
     prototype = MsgSubmitProposal_pb
     """"""
 
-    content: ProposalMsg = attr.ib()
+    content: dict = attr.ib()
     initial_deposit: Coins = attr.ib(converter=Coins)
     proposer: AccAddress = attr.ib()
 
@@ -100,7 +121,7 @@ class MsgSubmitProposal_v1beta1(Msg):
         return {
             "type": self.type_amino,
             "value": {
-                "content": self.content.to_amino(),
+                "content": self.content,
                 "initial_deposit": self.initial_deposit.to_amino(),
                 "proposer": self.proposer,
             },
@@ -109,35 +130,30 @@ class MsgSubmitProposal_v1beta1(Msg):
     def to_data(self) -> dict:
         return {
             "@type": self.type_url,
-            "content": self.content.to_data(),
+            "content": self.content,
             "initial_deposit": self.initial_deposit.to_data(),
             "proposer": self.proposer
         }
 
     @classmethod
     def from_data(cls, data: dict) -> MsgSubmitProposal:
-        from terra_classic_sdk.util.parse_content import parse_content
-
-        content = parse_content(data["content"])
         return cls(
-            content=content,
+            content=data['content'],
             initial_deposit=Coins.from_data(data["initial_deposit"]),
             proposer=data["proposer"],
         )
 
     def to_proto(self) -> MsgSubmitProposal_pb:
         return MsgSubmitProposal_pb(
-            content=self.content.to_proto(),
+            content=self.content,
             initial_deposit=self.initial_deposit.to_proto(),
             proposer=self.proposer,
         )
 
     @classmethod
     def from_proto(cls, proto: MsgSubmitProposal_pb) -> MsgSubmitProposal:
-        from terra_classic_sdk.util.parse_content import parse_content_proto
-        content = parse_content_proto(proto.content)
         return cls(
-            content=content,
+            content=proto["content"],
             initial_deposit=Coins.from_proto(proto["initial_deposit"]),
             proposer=proto["proposer"],
         )
