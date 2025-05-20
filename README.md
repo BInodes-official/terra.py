@@ -31,7 +31,15 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
-### 0.1.6 2025-05-19
+### V0.1.7 (2025-05-20)
+feat(gov): update MsgSubmitProposal to include metadata and simplify proposal content handling
+
+- Add messages, title, summary, and metadata fields to MsgSubmitProposal
+- Implement try_json_loads function to handle metadata parsing
+- Simplify proposal content handling by removing parse_content and parse_content_proto
+- Update related modules to use new MsgSubmitProposal structure- Remove unused @type field from Plan.to_data() method
+
+### V0.1.6 (2025-05-19)
 refactor(gov): update proposal handling for v0.47
 
 - Rename Content to ProposalMsg
@@ -40,7 +48,7 @@ refactor(gov): update proposal handling for v0.47
 - Rename parse_content to parse_proposal_msg
 - Update related proposals in distribution and wasm modules
 
-### 0.1.5 (2025-05-16)
+### V0.1.5 (2025-05-16)
 feat(core): add MsgUpdateContractAdmin and improve message handling
 
 - Add MsgUpdateContractAdmin class to support updating contract admin
@@ -48,26 +56,12 @@ feat(core): add MsgUpdateContractAdmin and improve message handling
 - Add to_data() methods for proposal classes
 - Update __init__ and parse_msg files to include new message type
 
-### 0.1.4 (2025-05-09)
+### V0.1.4 (2025-05-09)
 feat(gov): add support for v1 and v1beta1 gov messages
 
 - Add MsgSubmitProposal and MsgDeposit classes for v1 and v1beta1
 - Update LCD client to support both v1 and v1beta1 gov messages
 - Add parse_content support for AddBurnTaxExemptionAddressProposal
-
-### 0.1.3.2
-feat(sdk): add new messages and update existing ones
-
-- Add MsgVote_v1beta1 to gov module- Add MsgCancelUnbondingDelegation to staking module
-- Add MsgInstantiateContract2 to wasm module- Update MsgGrantAuthorization in authz module
-- Update AccessConfig in wasm/data.py
-### 0.1.3.1
-- fix(authz): update MsgExecAuthorized to properly handle 'msgs' field- Change 'msgs' field handling in MsgExecAuthorized.from_data
-### 0.1.3
-- Fixed the problem of incorrect automatic gas calculation when the Fee was not set for TX transactions in the basic SDK.
-- Fixed the issue in the basic SDK where there were no query results when querying the vote list.
-- Add default LCD and Chain ID.
-
 
 # Table of Contents
 
