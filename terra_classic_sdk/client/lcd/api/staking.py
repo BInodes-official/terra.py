@@ -1,3 +1,4 @@
+import json
 from typing import List, Optional
 
 import attr
@@ -175,6 +176,43 @@ class AsyncStakingAPI(BaseAsyncAPI):
         )
         return UnbondingDelegation.from_data(res.get("unbond"))
 
+    async def validators(
+        self, params: Optional[APIParams] = None
+    ) -> (List[Validator], dict):
+        """Fetch information of all validators.
+
+        Args:
+            params (APIParams, optional): additional params for the API like pagination
+
+        Returns:
+            List[Validator]: validator informations
+            dict: pagination info
+        """
+        res = await self._c._get("/cosmos/staking/v1beta1/validators", params)
+        return [Validator.from_data(d) for d in res.get("validators")], res.get(
+            "pagination"
+        )
+
+    async def bonded_validators(
+        self, delegator: AccAddress, params: Optional[PaginationOptions]=None
+    ) -> (List[Validator], dict):
+        """Fetches the list of validators a delegator is currently delegating to.
+
+        Args:
+            delegator (AccAddress): delegator account address
+            params (APIParams, optional): additional params for the API like pagination
+
+        Returns:
+            List[Validator]: currently bonded validators
+            dict: pagination info
+        """
+        res = await self._c._get(
+            f"/cosmos/staking/v1beta1/delegators/{delegator}/validators", params
+        )
+        return [Validator.from_data(d) for d in res.get("validators")], res.get(
+            "pagination"
+        )
+
     async def redelegations(
         self,
         delegator: Optional[AccAddress] = None,
@@ -211,43 +249,6 @@ class AsyncStakingAPI(BaseAsyncAPI):
         return [
             Redelegation.from_data(d) for d in res.get("redelegation_responses")
         ], res.get("pagination")
-
-    async def bonded_validators(
-        self, delegator: AccAddress, params: Optional[PaginationOptions]
-    ) -> (List[Validator], dict):
-        """Fetches the list of validators a delegator is currently delegating to.
-
-        Args:
-            delegator (AccAddress): delegator account address
-            params (APIParams, optional): additional params for the API like pagination
-
-        Returns:
-            List[Validator]: currently bonded validators
-            dict: pagination info
-        """
-        res = await self._c._get(
-            f"/cosmos/staking/v1beta1/delegators/{delegator}/validators", params
-        )
-        return [Validator.from_data(d) for d in res.get("validators")], res.get(
-            "pagination"
-        )
-
-    async def validators(
-        self, params: Optional[APIParams] = None
-    ) -> (List[Validator], dict):
-        """Fetch information of all validators.
-
-        Args:
-            params (APIParams, optional): additional params for the API like pagination
-
-        Returns:
-            List[Validator]: validator informations
-            dict: pagination info
-        """
-        res = await self._c._get("/cosmos/staking/v1beta1/validators", params)
-        return [Validator.from_data(d) for d in res.get("validators")], res.get(
-            "pagination"
-        )
 
     async def validator(self, validator: ValAddress) -> Validator:
         """Fetch information about a single validator.

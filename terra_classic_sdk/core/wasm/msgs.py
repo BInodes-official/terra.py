@@ -34,8 +34,8 @@ __all__ = [
 ]
 
 
-def parse_msg(msg: Union[dict, str, bytes]) -> dict:
-    if type(msg) is dict:
+def parse_msg(msg: Union[dict,list,str, bytes]) -> dict:
+    if type(msg) is dict or type(msg) is list:
         return msg
     elif type(msg) is int:
         return {"code_id":msg}

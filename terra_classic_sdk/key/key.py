@@ -196,7 +196,6 @@ class Key:
             )
         ]
         signature = self.sign(sign_doc.to_bytes())
-        print('signature',signature)
 
         # restore
         sign_doc.auth_info.signer_infos = si_backup

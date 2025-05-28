@@ -49,7 +49,6 @@ class AsyncGovAPI(BaseAsyncAPI):
             Proposal: proposal
         """
         res = await self._c._get(f"/cosmos/gov/v1/proposals/{proposal_id}")
-        # print(json.dumps(res))
         return Proposal.from_data(res.get("proposal"))
 
     # keep it private

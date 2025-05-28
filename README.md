@@ -31,6 +31,12 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### V0.1.8 (2025-05-28)
+refactor(lcd): remove unused code and fix validators params, update parse abount wasm
+
+- Delete redundant validators and bonded_validators methods in staking.py
+- Add new validators and bonded_validators methods with correct pagination parameters
+- Update parse_msg function in wasm/msgs.py to handle list type
 ### V0.1.7 (2025-05-20)
 feat(gov): update MsgSubmitProposal to include metadata and simplify proposal content handling
 
@@ -56,12 +62,19 @@ feat(core): add MsgUpdateContractAdmin and improve message handling
 - Add to_data() methods for proposal classes
 - Update __init__ and parse_msg files to include new message type
 
-### V0.1.4 (2025-05-09)
-feat(gov): add support for v1 and v1beta1 gov messages
+## Installation
 
-- Add MsgSubmitProposal and MsgDeposit classes for v1 and v1beta1
-- Update LCD client to support both v1 and v1beta1 gov messages
-- Add parse_content support for AddBurnTaxExemptionAddressProposal
+<sub>**NOTE:** _All code starting with a `$` is meant to run on your terminal (a bash prompt). All code starting with a `>>>` is meant to run in a python interpreter, like <a href="https://pypi.org/project/ipython/">ipython</a>._</sub>
+
+Terra SDK can be installed (preferably in a `virtual environment` from PyPI using `pip`) as follows:
+
+Upgrade the SDK:
+```
+$ pip install -U terra-classic-data-analysis-sdk
+```
+
+<sub>_You might need to run pip via ```python -m pip install -U terra-classic-data-analysis-sdk```. Additionally, you might have `pip3` installed instead of `pip`; proceed according to your own setup._<sub>
+
 
 # Table of Contents
 
@@ -100,17 +113,6 @@ A walk-through of the steps to get started with the Terra SDK alongside a few us
 
 Terra Classic SDK requires <a href="https://www.python.org/downloads/">Python v3.7+</a>.
 
-## Installation
-
-<sub>**NOTE:** _All code starting with a `$` is meant to run on your terminal (a bash prompt). All code starting with a `>>>` is meant to run in a python interpreter, like <a href="https://pypi.org/project/ipython/">ipython</a>._</sub>
-
-Terra SDK can be installed (preferably in a `virtual environment` from PyPI using `pip`) as follows:
-
-```
-$ pip install -U terra-classic-data-analysis-sdk
-```
-
-<sub>_You might need to run pip via ```python -m pip install -U terra-classic-data-analysis-sdk```. Additionally, you might have `pip3` installed instead of `pip`; proceed according to your own setup._<sub>
 
 # Usage Examples
 
