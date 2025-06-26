@@ -67,7 +67,7 @@ class BaseAccount(JSONSerializable):
         return {
             "@type": self.type_url,
             "address": self.address,
-            "pub_key": self.public_key and self.public_key.to_data(),
+            "pub_key": self.public_key.to_data() if self.public_key else None,
             "account_number": str(self.account_number),
             "sequence": str(self.sequence),
         }

@@ -130,7 +130,14 @@ class PublicKey(JSONSerializable, ABC):
 
     @abstractmethod
     def to_data(self) -> dict:
-        pass
+        type_url = self.type_url
+        if type_url == SimplePublicKey.type_url:
+            return SimplePublicKey.to_data()
+        elif type_url == ValConsPubKey.type_url:
+            return ValConsPubKey.to_data()
+        elif type_url == LegacyAminoMultisigPublicKey.type_url:
+            return LegacyAminoMultisigPublicKey.to_data()
+        raise TypeError("could not unmarshal PublicKey: type is incorrect")
 
     @abstractmethod
     def to_proto(self):
@@ -266,7 +273,7 @@ class LegacyAminoMultisigPublicKey(PublicKey):
         return {
             "@type": self.type_url,
             "threshold": self.threshold,
-            "public_keys": self.public_keys,
+            "public_keys": [pk.to_data() for pk in self.public_keys],
         }
 
     @classmethod

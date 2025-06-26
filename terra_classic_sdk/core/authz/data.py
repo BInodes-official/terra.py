@@ -94,7 +94,7 @@ class SendAuthorization(Authorization):
 
     @classmethod
     def from_data(cls, data: dict) -> SendAuthorization:
-        return cls(spend_limit=Coins.from_data(data['value']["spend_limit"]))
+        return cls(spend_limit=Coins.from_data(data["spend_limit"]))
 
     def to_proto(self) -> SendAuthorization_pb:
         return SendAuthorization_pb(spend_limit=self.spend_limit.to_proto())
