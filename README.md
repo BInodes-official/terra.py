@@ -31,6 +31,14 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### V0.1.9 (2025-06-26)
+refactor(core): implement parameter and proposal types for distribution, staking and tax modules
+
+- Add Params classes for distribution, staking and tax modules
+- Implement MsgUpdateParams proposal types for each module
+- Update base account and public key serialization methods
+- Refactor SendAuthorization data handling
+
 ### V0.1.8 (2025-05-28)
 refactor(lcd): remove unused code and fix validators params, update parse abount wasm
 

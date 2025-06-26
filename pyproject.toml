@@ -19,7 +19,7 @@ license = "MIT"
 packages = [{ include = "terra_classic_sdk" }]
 readme = "README.md"
 repository = "https://github.com/BInodes-official/terra.py"
-version = "0.1.8"
+version = "0.1.9"
 
 [tool.poetry.dependencies]
 aiohttp = "^3.9.1"
