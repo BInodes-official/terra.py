@@ -4,6 +4,7 @@ from terra_classic_sdk.core.tx import TxInfo, TxLog, parse_tx_logs
 from .account import Account
 from .base_account import BaseAccount
 from .lazy_graded_vesting_account import LazyGradedVestingAccount
+from .module_account import ModuleAccount
 
 __all__ = [
     "TxLog",
@@ -13,4 +14,5 @@ __all__ = [
     "Account",
     "BaseAccount",
     "LazyGradedVestingAccount",
+    "ModuleAccount"
 ]

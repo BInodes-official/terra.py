@@ -1,6 +1,8 @@
 """ibc-trasfer module data objects."""
 from __future__ import annotations
 
+from typing import List
+
 import attr
 from terra_proto.ibc.applications.transfer.v1 import DenomTrace as DenomTrace_pb
 
@@ -23,3 +25,9 @@ class DenomTrace(JSONSerializable):
 
     def to_proto(self) -> DenomTrace_pb:
         return DenomTrace_pb(path=self.path, base_denom=self.base_denom)
+
+    def to_data(self) -> dict:
+        return {
+            "path": self.path,
+            "base_denom": self.base_denom,
+        }

@@ -31,6 +31,13 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### V0.2.0 (2025-07-12)
+feat(auth): add ModuleAccount and update related components
+
+- Add ModuleAccount import in auth/data/__init__.py- Update Account class to handle ModuleAccount type
+- Add to_data method in DenomTrace class
+- Implement denom_traces method in IbcTransferAPI
+
 ### V0.1.9 (2025-06-26)
 refactor(core): implement parameter and proposal types for distribution, staking and tax modules
 
@@ -61,14 +68,6 @@ refactor(gov): update proposal handling for v0.47
 - Update LCD API to use new proposal structure
 - Rename parse_content to parse_proposal_msg
 - Update related proposals in distribution and wasm modules
-
-### V0.1.5 (2025-05-16)
-feat(core): add MsgUpdateContractAdmin and improve message handling
-
-- Add MsgUpdateContractAdmin class to support updating contract admin
-- Improve message parsing and handling for various modules
-- Add to_data() methods for proposal classes
-- Update __init__ and parse_msg files to include new message type
 
 ## Installation
 
