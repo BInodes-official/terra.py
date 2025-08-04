@@ -179,6 +179,8 @@ class TxBody(JSONSerializable):
     messages: List[Msg] = attr.ib()
     memo: Optional[str] = attr.ib(default="")
     timeout_height: Optional[int] = attr.ib(default=None)
+    extension_options: List[Any] = attr.ib(factory=list)
+    non_critical_extension_options: List[Any] = attr.ib(factory=list)
 
     def to_amino(self) -> dict:
         return {
@@ -192,6 +194,8 @@ class TxBody(JSONSerializable):
             "messages": [m.to_data() for m in self.messages],
             "memo": self.memo if self.memo else "",
             "timeout_height": self.timeout_height if self.timeout_height else "0",
+            "extension_options":self.extension_options,
+            "non_critical_extension_options":self.non_critical_extension_options
         }
 
     def to_proto(self) -> TxBody_pb:
@@ -215,6 +219,8 @@ class TxBody(JSONSerializable):
             [Msg.from_data(m) for m in data["messages"]],
             data["memo"],
             data["timeout_height"],
+            data["extension_options"],
+            data["non_critical_extension_options"],
         )
 
     @classmethod
@@ -472,11 +478,24 @@ class TxInfo(JSONSerializable):
     timestamp: str = attr.ib()
     """Time at which transaction was included."""
 
+    data: str = attr.ib()
+    """Transaction data."""
+
+    info: str=attr.ib()
+    """Transaction info."""
+
+    events: List[dict] = attr.ib()
+    """events obj for the tx_info data."""
+
+    events_by_type: Dict[str, List[dict]] = attr.ib(default=None)
+
     code: Optional[int] = attr.ib(default=None)
     """If this field is not ``None``, the transaction failed at ``DeliverTx`` stage."""
 
     codespace: Optional[str] = attr.ib(default=None)
     """Error subspace (used alongside ``code``)."""
+
+
 
     def to_data(self) -> dict:
         data = {
@@ -488,6 +507,10 @@ class TxInfo(JSONSerializable):
             "gas_used": str(self.gas_used),
             "timestamp": self.timestamp,
             "tx": self.tx.to_data(),
+            "data": self.data,
+            "info": self.info,
+            "events":  self.events,
+            "events_by_type":self.events_by_type,
             "code": self.code,
             "codespace": self.codespace,
         }
@@ -514,6 +537,10 @@ class TxInfo(JSONSerializable):
             data.get("gas_used"),
             Tx.from_data(data.get("tx")),
             data.get("timestamp"),
+            data.get("data"),
+            data.get("info"),
+            data.get("events"),
+            parse_events_by_type(data.get("events")) if data.get("events") else {},
             data.get("code"),
             data.get("codespace"),
         )
