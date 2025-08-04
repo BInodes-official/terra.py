@@ -31,6 +31,12 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### V0.2.1 (2025-08-04)
+feat(bank): add denominations metadata endpoint and update related data objects
+
+- Add denoms_metadata method to AsyncBankAPI and BankAPI
+- Create Metadata and DenomUnit classes in bank/data.py
+- Update TxBody and TxInfo classes to include new fields
 ### V0.2.0 (2025-07-12)
 feat(auth): add ModuleAccount and update related components
 
@@ -52,22 +58,6 @@ refactor(lcd): remove unused code and fix validators params, update parse abount
 - Delete redundant validators and bonded_validators methods in staking.py
 - Add new validators and bonded_validators methods with correct pagination parameters
 - Update parse_msg function in wasm/msgs.py to handle list type
-### V0.1.7 (2025-05-20)
-feat(gov): update MsgSubmitProposal to include metadata and simplify proposal content handling
-
-- Add messages, title, summary, and metadata fields to MsgSubmitProposal
-- Implement try_json_loads function to handle metadata parsing
-- Simplify proposal content handling by removing parse_content and parse_content_proto
-- Update related modules to use new MsgSubmitProposal structure- Remove unused @type field from Plan.to_data() method
-
-### V0.1.6 (2025-05-19)
-refactor(gov): update proposal handling for v0.47
-
-- Rename Content to ProposalMsg
-- Update Proposal data structure to use ProposalMsg- Modify MsgSubmitProposal to use ProposalMsg
-- Update LCD API to use new proposal structure
-- Rename parse_content to parse_proposal_msg
-- Update related proposals in distribution and wasm modules
 
 ## Installation
 
