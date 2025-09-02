@@ -31,6 +31,14 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### V0.2.2 (2025-09-02)
+feat(wasm, slashing): add new functionality and update messages
+
+- Add MsgStoreCode_vbeta1 to wasm module
+- Update connection data parsing in ibc module
+- Add codes and contracts_by_code methods to WasmAPI- Update contract_info method in WasmAPI
+- Add MsgUpdateParams to slashing module
+
 ### V0.2.1 (2025-08-04)
 feat(bank): add denominations metadata endpoint and update related data objects
 
@@ -52,12 +60,6 @@ refactor(core): implement parameter and proposal types for distribution, staking
 - Update base account and public key serialization methods
 - Refactor SendAuthorization data handling
 
-### V0.1.8 (2025-05-28)
-refactor(lcd): remove unused code and fix validators params, update parse abount wasm
-
-- Delete redundant validators and bonded_validators methods in staking.py
-- Add new validators and bonded_validators methods with correct pagination parameters
-- Update parse_msg function in wasm/msgs.py to handle list type
 
 ## Installation
 
