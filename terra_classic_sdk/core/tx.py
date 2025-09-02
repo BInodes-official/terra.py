@@ -515,14 +515,14 @@ class TxInfo(JSONSerializable):
             "codespace": self.codespace,
         }
 
-        if not self.logs:
-            del data["logs"]
-
-        if not self.code:
-            del data["code"]
-
-        if not self.codespace:
-            del data["codespace"]
+        # if not self.logs:
+        #     del data["logs"]
+        #
+        # if not self.code:
+        #     del data["code"]
+        #
+        # if not self.codespace:
+        #     del data["codespace"]
 
         return data
 

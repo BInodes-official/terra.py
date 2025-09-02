@@ -3,6 +3,7 @@ from typing import Union
 from terra_classic_sdk.core.distribution.proposals import MsgCommunityPoolSpend,MsgUpdateParams as MsgUpdateParams_distribution
 from terra_classic_sdk.core.staking.proposals import MsgUpdateParams as MsgUpdateParams_staking
 from terra_classic_sdk.core.tax.proposals import MsgUpdateParams as MsgUpdateParams_tax
+from terra_classic_sdk.core.slashing.proposals import MsgUpdateParams as MsgUpdateParams_slashing
 from terra_classic_sdk.core.gov.proposals import ExecLegacyContentProposal
 from terra_classic_sdk.core.params.proposals import ParameterChangeProposal
 from terra_classic_sdk.core.ibc.proposals import ClientUpdateProposal
@@ -32,6 +33,7 @@ ProposalMsg = Union[
     MsgUpdateParams_distribution,
     MsgUpdateParams_staking,
     MsgUpdateParams_tax,
+    MsgUpdateParams_slashing,
     ParameterChangeProposal,
     SoftwareUpgradeProposal,
     CancelSoftwareUpgradeProposal,
@@ -48,6 +50,7 @@ parse_proposal_msg = create_demux(
         MsgUpdateParams_distribution,
         MsgUpdateParams_staking,
         MsgUpdateParams_tax,
+        MsgUpdateParams_slashing,
         ParameterChangeProposal,
         SoftwareUpgradeProposal,
         CancelSoftwareUpgradeProposal,
@@ -64,6 +67,7 @@ parse_proposal_msg_proto = create_demux_proto(
         ExecLegacyContentProposal,
         MsgUpdateParams_distribution,
         MsgUpdateParams_staking,
+        MsgUpdateParams_slashing,
         ParameterChangeProposal,
         SoftwareUpgradeProposal,
         CancelSoftwareUpgradeProposal,

@@ -25,6 +25,7 @@ from terra_classic_sdk.util.remove_none import remove_none
 
 __all__ = [
     "MsgStoreCode",
+    "MsgStoreCode_vbeta1",
     "MsgInstantiateContract",
     "MsgExecuteContract",
     "MsgExecuteContract_vbeta1",
@@ -83,6 +84,14 @@ class MsgStoreCode(Msg):
             ),
         )
 
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "sender": self.sender,
+            "wasm_byte_code": self.wasm_byte_code,
+            "instantiate_permission": self.instantiate_permission.to_data() if self.instantiate_permission else None,
+        }
+
     def to_proto(self) -> MsgStoreCode_pb:
         return MsgStoreCode_pb(
             sender=self.sender,
@@ -98,6 +107,55 @@ class MsgStoreCode(Msg):
             instantiate_permission=AccessConfig.from_proto(
                 proto.instantiate_permission
             ),
+        )
+
+from terra_proto.terra.wasm.v1beta1 import MsgStoreCode as MsgStoreCode_v1beta1_pb
+
+@attr.s
+class MsgStoreCode_vbeta1(Msg):
+    """Upload a new smart contract WASM binary to the blockchain (v1beta1 version).
+
+    Args:
+        sender: address of sender
+        wasm_byte_code: base64-encoded string containing bytecode
+    """
+
+    type_amino = "wasm/MsgStoreCode"
+    type_url = "/terra.wasm.v1beta1.MsgStoreCode"
+    prototype = MsgStoreCode_v1beta1_pb
+
+    sender: AccAddress = attr.ib()
+    wasm_byte_code: str = attr.ib()
+
+    @classmethod
+    def from_data(cls, data: dict) -> "MsgStoreCode_vbeta1":
+        wasm_byte_code = data["wasm_byte_code"]
+        # # 确保 wasm_byte_code 是字符串类型（base64 编码）
+        # if isinstance(wasm_byte_code, bytes):
+        #     wasm_byte_code = base64.b64encode(wasm_byte_code).decode()
+        return cls(
+            sender=data["sender"],
+            wasm_byte_code=wasm_byte_code,
+        )
+
+    def to_data(self) -> dict:
+        return {
+            "@type": self.type_url,
+            "sender": self.sender,
+            "wasm_byte_code": self.wasm_byte_code,
+        }
+
+    def to_proto(self) -> MsgStoreCode_v1beta1_pb:
+        return MsgStoreCode_v1beta1_pb(
+            sender=self.sender,
+            wasm_byte_code=base64.b64decode(self.wasm_byte_code),
+        )
+
+    @classmethod
+    def from_proto(cls, proto: MsgStoreCode_v1beta1_pb) -> "MsgStoreCode_vbeta1":
+        return cls(
+            sender=proto.sender,
+            wasm_byte_code=base64.b64encode(proto.wasm_byte_code).decode(),
         )
 
 

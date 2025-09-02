@@ -114,7 +114,8 @@ def convert_history_operation_type_from_json(
 
 
 @attr.s
-class AccessConfig(JSONSerializable):
+class \
+        AccessConfig(JSONSerializable):
 
     permission: AccessType = attr.ib()
     """"""

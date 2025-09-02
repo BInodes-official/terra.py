@@ -27,7 +27,7 @@ class Version(JSONSerializable):
         return cls(
             identifier=data["identifier"],
             features=data["features"],
-        )
+        ) if data else None
 
     def to_proto(self) -> Version_pb:
         return Version_pb(identifier=self.identifier, features=self.features)

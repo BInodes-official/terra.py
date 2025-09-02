@@ -1,4 +1,5 @@
 """Some useful base classes to inherit from."""
+import json
 from abc import abstractmethod
 from typing import Any, Callable, Dict, List
 

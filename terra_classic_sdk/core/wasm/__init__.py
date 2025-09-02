@@ -5,6 +5,7 @@ from .msgs import (
     MsgInstantiateContract,
     MsgMigrateContract,
     MsgStoreCode,
+    MsgStoreCode_vbeta1,
     MsgUpdateAdmin,
     MsgInstantiateContract2,
     MsgUpdateContractAdmin
@@ -12,6 +13,7 @@ from .msgs import (
 
 __all__ = [
     "MsgStoreCode",
+    "MsgStoreCode_vbeta1",
     "MsgInstantiateContract",
     "MsgExecuteContract",
     "MsgExecuteContract_vbeta1",
