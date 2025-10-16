@@ -54,6 +54,21 @@ class AsyncDistributionAPI(BaseAsyncAPI):
         commission = res["commission"]
         return Coins.from_data(commission["commission"])
 
+    async def validator_outstanding_rewards(self, validator: ValAddress) -> Coins:
+        """Fetches the outstanding reward data for a validator.
+
+        Args:
+            validator (ValAddress): validator operator address
+
+        Returns:
+            Coins: outstanding rewards for the validator
+        """
+        res = await self._c._get(
+            f"/cosmos/distribution/v1beta1/validators/{validator}/outstanding_rewards"
+        )
+        rewards=res['rewards']
+        return Coins.from_data(rewards["rewards"])
+
     async def withdraw_address(self, delegator: AccAddress) -> AccAddress:
         """Fetches the withdraw address associated with a delegator.
 
@@ -99,6 +114,12 @@ class DistributionAPI(AsyncDistributionAPI):
         pass
 
     validator_commission.__doc__ = AsyncDistributionAPI.validator_commission.__doc__
+
+    @sync_bind(AsyncDistributionAPI.validator_outstanding_rewards)
+    def validator_outstanding_rewards(self, validator: ValAddress) -> Coins:
+        pass
+
+    validator_outstanding_rewards.__doc__ = AsyncDistributionAPI.validator_outstanding_rewards.__doc__
 
     @sync_bind(AsyncDistributionAPI.withdraw_address)
     def withdraw_address(self, delegator: AccAddress) -> AccAddress:

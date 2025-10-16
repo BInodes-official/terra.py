@@ -1,7 +1,7 @@
 # terra_classic_sdk/client/lcd/api/bank.py
 from typing import Optional, List
 
-from terra_classic_sdk.core import AccAddress, Coins
+from terra_classic_sdk.core import AccAddress, Coins, Coin
 from terra_classic_sdk.core.bank.data import Metadata
 
 from ..params import APIParams
@@ -51,6 +51,23 @@ class AsyncBankAPI(BaseAsyncAPI):
         metadatas = [Metadata.from_data(metadata) for metadata in res.get("metadatas", [])]
         return metadatas, res.get("pagination", {})
 
+    async def total_denom(self, denom: str, params: Optional[APIParams] = None) -> Coin:
+        """Fetches the current total supply of a token by denom.
+
+        Args:
+            denom (str): denom of the token to query
+            params (APIParams, optional): additional params for the API like pagination
+
+        Returns:
+            Coin: total supply of the denom
+        """
+        url = f"/cosmos/bank/v1beta1/supply/by_denom"
+        params_dict = {"denom": denom}
+        if params is not None:
+            params_dict.update(params.to_dict())
+        res = await self._c._get(url, params_dict)
+        return Coin.from_data(res.get("amount"))
+
 
 class BankAPI(AsyncBankAPI):
     @sync_bind(AsyncBankAPI.balance)
@@ -72,3 +89,9 @@ class BankAPI(AsyncBankAPI):
         pass
 
     denoms_metadata.__doc__ = AsyncBankAPI.denoms_metadata.__doc__
+
+    @sync_bind(AsyncBankAPI.total_denom)
+    def total_denom(self, denom: str, params: Optional[APIParams] = None) -> Coin:
+        pass
+
+    total_denom.__doc__ = AsyncBankAPI.total_denom.__doc__
