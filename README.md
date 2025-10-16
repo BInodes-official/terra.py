@@ -31,6 +31,16 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### V0.2.3 (2025-10-16)
+feat(bank): Add the function to query the total supply of tokens
+
+- Import the `Coin` class in `bank.py` to support the handling of the amount of a single token.
+- Implement the asynchronous method `total_denom` to query the total supply of the specified `denom`.
+- Add a synchronous binding wrapper for the `total_denom` method.
+- Add a method to query the unclaimed rewards of validators in `distribution.py`
+ - Implement both asynchronous and synchronous interfaces for `validator_outstanding_rewards`.
+ - Update the relevant API docstrings to reflect the new features.
+
 ### V0.2.2 (2025-09-02)
 feat(wasm, slashing): add new functionality and update messages
 
@@ -45,6 +55,7 @@ feat(bank): add denominations metadata endpoint and update related data objects
 - Add denoms_metadata method to AsyncBankAPI and BankAPI
 - Create Metadata and DenomUnit classes in bank/data.py
 - Update TxBody and TxInfo classes to include new fields
+
 ### V0.2.0 (2025-07-12)
 feat(auth): add ModuleAccount and update related components
 
@@ -52,13 +63,6 @@ feat(auth): add ModuleAccount and update related components
 - Add to_data method in DenomTrace class
 - Implement denom_traces method in IbcTransferAPI
 
-### V0.1.9 (2025-06-26)
-refactor(core): implement parameter and proposal types for distribution, staking and tax modules
-
-- Add Params classes for distribution, staking and tax modules
-- Implement MsgUpdateParams proposal types for each module
-- Update base account and public key serialization methods
-- Refactor SendAuthorization data handling
 
 
 ## Installation
