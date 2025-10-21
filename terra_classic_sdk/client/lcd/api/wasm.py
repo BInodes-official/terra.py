@@ -90,24 +90,17 @@ class AsyncWasmAPI(BaseAsyncAPI):
         
         contract_info = res.get("contract_info")
         
-        # if 'address' in contract_info:
-        #     address = contract_info['address']
-        # else:
-        #     address = ''
-        #
-        # if 'init_msg' in contract_info:
-        #     init_msg = contract_info['init_msg']
-        # else:
-        #     init_msg = ''
-
         return {
-            "contract_address":contract_address,
-            "code_id": Numeric.parse(contract_info["code_id"]),
-            "creator": contract_info.get("creator", ""),
-            "admin": contract_info.get("admin", ""),
-            "label":contract_info["label"] ,
-            "created": contract_info["created"],
-            "ibc_port_id": contract_info.get("ibc_port_id", ""),
+            "address": contract_address,
+            "contract_info": {
+                "code_id": contract_info["code_id"],
+                "creator": contract_info.get("creator", ""),
+                "admin": contract_info.get("admin", ""),
+                "label": contract_info["label"],
+                "created": contract_info["created"],
+                "ibc_port_id": contract_info.get("ibc_port_id", ""),
+                "extension": contract_info.get("extension", None)
+            }
         }
 
     async def contract_query(self, contract_address: str, query: Union[dict, str]) -> Any:
