@@ -31,6 +31,28 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### V0.2.5 (2025-12-15)
+fix(wasm): Improve the message parsing function to support more data types
+
+- Update the `parse_msg` function signature to include the `int` type.
+- Use `isinstance` instead of `type` checks to enhance code robustness.
+- Add attempts to parse JSON for `str` and `bytes` types.
+- Return the original value for strings or bytes that cannot be parsed.
+- Add exception handling to catch `ValueError` and `TypeError`.
+- For unanticipated data types, directly return the original value instead of raising an exception.
+
+### V0.2.4 (2025-10-21)
+Base Terra classic's core v3.6.0 upgrade:
+
+refactor(wasm): Refactor the contract information return structure
+
+- Adjust the return format of contract information, separating the contract address from the contract information.
+- Add a new "extension" field in the contract information to support extended information.
+- Simplify the field access logic to improve code readability.
+- Remove redundant field - handling comments.
+- Keep the "code_id" field as a string type instead of parsing it into a number.
+- Retain all original fields and maintain their data integrity.
+
 ### V0.2.3 (2025-10-16)
 feat(bank): Add the function to query the total supply of tokens
 
@@ -56,12 +78,6 @@ feat(bank): add denominations metadata endpoint and update related data objects
 - Create Metadata and DenomUnit classes in bank/data.py
 - Update TxBody and TxInfo classes to include new fields
 
-### V0.2.0 (2025-07-12)
-feat(auth): add ModuleAccount and update related components
-
-- Add ModuleAccount import in auth/data/__init__.py- Update Account class to handle ModuleAccount type
-- Add to_data method in DenomTrace class
-- Implement denom_traces method in IbcTransferAPI
 
 
 

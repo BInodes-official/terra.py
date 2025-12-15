@@ -35,13 +35,19 @@ __all__ = [
 ]
 
 
-def parse_msg(msg: Union[dict,list,str, bytes]) -> dict:
-    if type(msg) is dict or type(msg) is list:
+def parse_msg(msg: Union[dict, list, str, bytes, int]) -> Union[dict, list, str, bytes, int]:
+    if isinstance(msg, (dict, list)):
         return msg
-    elif type(msg) is int:
-        return {"code_id":msg}
-    return json.loads(msg)
-
+    elif isinstance(msg, int):
+        return {"code_id": msg}
+    elif isinstance(msg, (str, bytes)):
+        try:
+            return json.loads(msg)
+        except (ValueError, TypeError):
+            return msg
+    else:
+        # Return msg as is for any other unexpected types
+        return msg
 
 @attr.s
 class MsgStoreCode(Msg):
