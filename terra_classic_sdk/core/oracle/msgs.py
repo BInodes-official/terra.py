@@ -92,7 +92,7 @@ class MsgDelegateFeedConsent(Msg):
         return cls(operator=data["operator"], delegate=data["delegate"])
 
     def to_proto(self) -> MsgDelegateFeedConsent_pb:
-        return MsgDelegateFeedConsent_pb(operator=self.operator, delegate=self.delegate)
+        return MsgDelegateFeedConsent_pb(operator=str(self.operator), delegate=str(self.delegate))
 
     @classmethod
     def from_proto(cls, proto: MsgDelegateFeedConsent_pb) -> MsgDelegateFeedConsent:

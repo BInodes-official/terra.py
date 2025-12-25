@@ -44,8 +44,11 @@ def get_code_id(
     if tx_result.logs:
         code_id = tx_result.logs[msg_index].events_by_type["store_code"]["code_id"][0]
         return code_id
+    elif hasattr(tx_result, 'events_by_type') and tx_result.events_by_type and "store_code" in tx_result.events_by_type:
+        code_id = tx_result.events_by_type["store_code"]["code_id"][0]
+        return code_id
     else:
-        raise ValueError("could not parse code id -- tx logs are empty.")
+        raise ValueError("could not parse code id -- tx logs and events are empty or do not contain store_code event.")
 
 
 def get_contract_address(
@@ -62,12 +65,33 @@ def get_contract_address(
         str: extracted contract address
     """
     if tx_result.logs:
-        contract_address = tx_result.logs[msg_index].events_by_type[
-            "instantiate_contract"
-        ]["contract_address"][0]
+        # The event type can be 'instantiate_contract' or just 'instantiate'
+        event_type = "instantiate_contract"
+        if event_type not in tx_result.logs[msg_index].events_by_type:
+            event_type = "instantiate"
+        
+        # The attribute key can be 'contract_address' or '_contract_address'
+        key = "contract_address"
+        if key not in tx_result.logs[msg_index].events_by_type[event_type]:
+            key = "_contract_address"
+            
+        contract_address = tx_result.logs[msg_index].events_by_type[event_type][key][0]
         return AccAddress(contract_address)
-    else:
-        raise ValueError("could not parse code id -- tx logs are empty.")
+    elif hasattr(tx_result, 'events_by_type') and tx_result.events_by_type:
+        event_type = "instantiate_contract"
+        if event_type not in tx_result.events_by_type:
+            event_type = "instantiate"
+
+        if event_type in tx_result.events_by_type:
+            key = "contract_address"
+            if key not in tx_result.events_by_type[event_type]:
+                key = "_contract_address"
+            
+            if key in tx_result.events_by_type[event_type]:
+                contract_address = tx_result.events_by_type[event_type][key][0]
+                return AccAddress(contract_address)
+
+    raise ValueError("could not parse contract address -- tx logs and events are empty or do not contain instantiate_contract event.")
 
 
 def get_contract_events(

@@ -20,7 +20,8 @@ __all__ = [
     "TxLog",
     "ModeInfo",
     "ModeInfoSingle",
-    "ModeInfoMulti"
+    "ModeInfoMulti",
+    "Tip"
 ]
 
 from .bech32 import AccAddress, AccPubKey, ValAddress, ValPubKey
@@ -37,4 +38,4 @@ from .public_key import (
 )
 from .sign_doc import SignDoc
 from .signature_v2 import SignatureV2
-from .tx import ModeInfo, ModeInfoMulti, ModeInfoSingle, Tx, TxInfo, TxLog
+from .tx import ModeInfo, ModeInfoMulti, ModeInfoSingle, Tip, Tx, TxInfo, TxLog

@@ -45,6 +45,7 @@ class MsgSubmitProposal(Msg):
     title:str=attr.ib()
     summary:str=attr.ib()
     metadata: Union[dict, str]=attr.ib()
+    expedited: bool = attr.ib(default=False)
 
     def to_amino(self) -> dict:
         return {
@@ -56,6 +57,7 @@ class MsgSubmitProposal(Msg):
                 "title": self.title,
                 "summary": self.summary,
                 "metadata": self.metadata,
+                "expedited": self.expedited,
             },
         }
 
@@ -68,6 +70,7 @@ class MsgSubmitProposal(Msg):
             "title": self.title,
             "summary": self.summary,
             "metadata": self.metadata,
+            "expedited": self.expedited,
         }
 
     @classmethod
@@ -78,20 +81,33 @@ class MsgSubmitProposal(Msg):
             messages=data["messages"],
             title=data["title"],
             summary=data["summary"],
-            metadata=try_json_loads(data["metadata"])
+            metadata=try_json_loads(data["metadata"]),
+            expedited=data.get("expedited", False)
         )
 
     def to_proto(self) -> MsgSubmitProposal_pb:
-        return MsgSubmitProposal_pb(
+        from terra_proto.cosmos.gov.v1 import MsgSubmitProposal as TerraMsgSubmitProposal
+        return TerraMsgSubmitProposal(
             initial_deposit=self.initial_deposit.to_proto(),
-            proposer=self.proposer
+            proposer=self.proposer,
+            messages=[msg.to_proto() for msg in self.messages],
+            title=self.title,
+            summary=self.summary,
+            metadata=self.metadata,
+            expedited=self.expedited,
         )
 
     @classmethod
     def from_proto(cls, proto: MsgSubmitProposal_pb) -> MsgSubmitProposal:
+        from terra_proto.cosmos.gov.v1 import MsgSubmitProposal as TerraMsgSubmitProposal
         return cls(
-            initial_deposit=Coins.from_proto(proto["initial_deposit"]),
-            proposer=proto["proposer"],
+            initial_deposit=Coins.from_proto(proto.initial_deposit),
+            proposer=proto.proposer,
+            messages=proto.messages,
+            title=proto.title,
+            summary=proto.summary,
+            metadata=proto.metadata,
+            expedited=proto.expedited,
         )
 
 @attr.s

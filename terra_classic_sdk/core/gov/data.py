@@ -105,6 +105,9 @@ class Proposal(JSONSerializable):
     proposer:AccAddress=attr.ib()
     """proposer of proposal."""
 
+    expedited: bool = attr.ib(default=False)
+    """whether proposal is expedited."""
+
     def to_amino(self) -> dict:
         return {
             "proposal_id": str(self.proposal_id),
@@ -147,11 +150,13 @@ class Proposal(JSONSerializable):
             metadata=data['metadata'],
             title=data['title'],
             summary=data['summary'],
-            proposer=data['proposer']
+            proposer=data['proposer'],
+            expedited=data.get('expedited', False)
         )
 
     def to_proto(self) -> Proposal_pb:
-        return Proposal_pb(
+        from terra_proto.cosmos.gov.v1 import Proposal as TerraProposal
+        return TerraProposal(
             proposal_id=self.proposal_id,
             status=ProposalStatus.from_str(self.status),
             final_tally_result=self.final_tally_result.to_proto(),
@@ -160,6 +165,7 @@ class Proposal(JSONSerializable):
             total_deposit=self.total_deposit.to_proto(),
             voting_start_time=self.voting_start_time,
             voting_end_time=self.voting_end_time,
+            expedited=self.expedited,
         )
 
 

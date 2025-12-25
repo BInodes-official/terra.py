@@ -3,13 +3,17 @@ import json
 from abc import ABC
 from datetime import datetime
 from typing import Any
+import base64
+import attr
 
 from terra_classic_sdk.util.converter import to_isoformat
 
 
 def to_data(x: Any) -> Any:
-    if "to_data" in dir(x):
+    if hasattr(x, "to_data"):
         return x.to_data()
+    if isinstance(x, bytes):
+        return base64.b64encode(x).decode("ascii")
     if isinstance(x, int):
         return str(x)
     if isinstance(x, datetime):
@@ -18,24 +22,20 @@ def to_data(x: Any) -> Any:
         return [to_data(g) for g in x]
     if isinstance(x, dict):
         return dict_to_data(x)
-    if isinstance(x, datetime):
-        return to_isoformat(x)
     return x
 
 
 def to_amino(x: Any) -> Any:
-    if "to_amino" in dir(x):
+    if hasattr(x, "to_amino"):
         return x.to_amino()
     if isinstance(x, list):
-        return [to_data(g) for g in x]
+        return [to_amino(g) for g in x]
     if isinstance(x, datetime):
         return to_isoformat(x)
     if isinstance(x, dict):
         return dict_to_amino(x)
     if isinstance(x, int):
         return str(x)
-    if isinstance(x, datetime):
-        return to_isoformat(x)
 
 
 def dict_to_amino(d: dict):
@@ -50,7 +50,10 @@ def dict_to_data(d: dict) -> dict:
 class JSONSerializable(ABC):
     def to_data(self) -> Any:
         """Converts the object to its JSON-serializable Python data representation."""
-        pass  # return dict_to_data(copy.deepcopy(self.__dict__))
+        # The default implementation for attrs-based classes
+        if hasattr(self, "__attrs_attrs__"):
+            return dict_to_data(attr.asdict(self))
+        return dict_to_data(copy.deepcopy(self.__dict__))
 
     def to_json(self) -> str:
         """Marshals the object into a stringified JSON serialization. Keys are first sorted

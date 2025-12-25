@@ -17,6 +17,7 @@ from terra_proto.cosmos.tx.v1beta1 import AuthInfo as AuthInfo_pb
 from terra_proto.cosmos.tx.v1beta1 import SignerInfo as SignerInfo_pb
 from terra_proto.cosmos.tx.v1beta1 import Tx as Tx_pb
 from terra_proto.cosmos.tx.v1beta1 import TxBody as TxBody_pb
+from terra_proto.cosmos.tx.v1beta1 import Tip as Tip_pb
 
 from terra_classic_sdk.core.compact_bit_array import CompactBitArray
 from terra_classic_sdk.core.fee import Fee
@@ -29,6 +30,8 @@ from terra_classic_sdk.core.public_key import (
 )
 from terra_classic_sdk.core.signature_v2 import SignatureV2
 from terra_classic_sdk.util.json import JSONSerializable
+from terra_classic_sdk.core.coins import Coins
+from terra_classic_sdk.core import AccAddress
 
 __all__ = [
     "SignMode",
@@ -40,12 +43,26 @@ __all__ = [
     "parse_tx_logs",
     "SignerInfo",
     "SignerData",
+    "Tip",
 ]
 
 # just alias
 from terra_classic_sdk.util.parse_msg import parse_proto
 
 SignMode = SignMode_pb
+
+
+def _recursive_bytes_to_str(obj):
+    if isinstance(obj, bytes):
+        try:
+            return obj.decode("utf-8")
+        except UnicodeDecodeError:
+            return base64.b64encode(obj).decode("ascii")
+    if isinstance(obj, dict):
+        return {k: _recursive_bytes_to_str(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_recursive_bytes_to_str(v) for v in obj]
+    return obj
 
 
 @attr.s
@@ -178,24 +195,28 @@ class TxBody(JSONSerializable):
 
     messages: List[Msg] = attr.ib()
     memo: Optional[str] = attr.ib(default="")
-    timeout_height: Optional[int] = attr.ib(default=None)
+    timeout_height: Optional[int] = attr.ib(converter=int, default=0)
     extension_options: List[Any] = attr.ib(factory=list)
     non_critical_extension_options: List[Any] = attr.ib(factory=list)
+    unordered: bool = attr.ib(default=False)
+    timeout_timestamp: Optional[int] = attr.ib(default=None)
 
     def to_amino(self) -> dict:
         return {
             "messages": [m.to_amino() for m in self.messages],
             "memo": self.memo if self.memo else "",
-            "timeout_height": self.timeout_height if self.timeout_height else "0",
+            "timeout_height": str(self.timeout_height) if self.timeout_height else "0",
         }
-    
+
     def to_data(self) -> dict:
         return {
             "messages": [m.to_data() for m in self.messages],
             "memo": self.memo if self.memo else "",
-            "timeout_height": self.timeout_height if self.timeout_height else "0",
-            "extension_options":self.extension_options,
-            "non_critical_extension_options":self.non_critical_extension_options
+            "timeout_height": str(self.timeout_height) if self.timeout_height is not None else "0",
+            "extension_options": self.extension_options,
+            "non_critical_extension_options": self.non_critical_extension_options,
+            "unordered": self.unordered,
+            "timeout_timestamp": str(self.timeout_timestamp) if self.timeout_timestamp else None,
         }
 
     def to_proto(self) -> TxBody_pb:
@@ -203,33 +224,80 @@ class TxBody(JSONSerializable):
             messages=[m.pack_any() for m in self.messages],
             memo=self.memo or "",
             timeout_height=self.timeout_height,
+            extension_options=self.extension_options,
+            non_critical_extension_options=self.non_critical_extension_options,
+            # unordered=self.unordered,
+            # timeout_timestamp=self.timeout_timestamp,
         )
 
     @classmethod
-    def from_amino(cls, data:dict) -> TxBody:
+    def from_amino(cls, data: dict) -> TxBody:
         return cls(
-            [Msg.from_amino(m) for m in data["messages"]],
-            data["memo"],
-            data["timeout_height"],
+            messages=[Msg.from_amino(m) for m in data["messages"]],
+            memo=data.get("memo", ""),
+            timeout_height=int(data.get("timeout_height") or 0),
         )
-    
+
     @classmethod
     def from_data(cls, data: dict) -> TxBody:
+        timeout_ts = data.get("timeout_timestamp")
         return cls(
-            [Msg.from_data(m) for m in data["messages"]],
-            data["memo"],
-            data["timeout_height"],
-            data["extension_options"],
-            data["non_critical_extension_options"],
+            messages=[Msg.from_data(m) for m in data["messages"]],
+            memo=data.get("memo"),
+            timeout_height=int(data.get("timeout_height") or 0),
+            extension_options=data.get("extension_options", []),
+            non_critical_extension_options=data.get(
+                "non_critical_extension_options", []
+            ),
+            unordered=data.get("unordered", False),
+            timeout_timestamp=int(timeout_ts) if timeout_ts else None,
         )
 
     @classmethod
     def from_proto(cls, proto: TxBody_pb) -> TxBody:
         return cls(
-            [Msg.unpack_any(m) for m in proto.messages],
-            proto.memo,
-            proto.timeout_height,
+            messages=[Msg.unpack_any(m) for m in proto.messages],
+            memo=proto.memo,
+            timeout_height=proto.timeout_height,
+            extension_options=proto.extension_options,
+            non_critical_extension_options=proto.non_critical_extension_options,
+            unordered=proto.unordered,
+            timeout_timestamp=proto.timeout_timestamp,
         )
+
+
+@attr.s
+class Tip(JSONSerializable):
+    """
+    Tip is the tip used for meta-transactions.
+    """
+
+    amount: Coins = attr.ib(converter=Coins)
+    """amount is the amount of the tip"""
+
+    tipper: AccAddress = attr.ib()
+    """tipper is the address of the account paying for the tip"""
+
+    def to_amino(self) -> dict:
+        return {"amount": self.amount.to_amino(), "tipper": self.tipper}
+
+    def to_data(self) -> dict:
+        return {"amount": self.amount.to_data(), "tipper": self.tipper}
+
+    @classmethod
+    def from_amino(cls, amino: dict) -> Tip:
+        return Tip(Coins.from_amino(amino["amount"]), amino["tipper"])
+
+    @classmethod
+    def from_data(cls, data: dict) -> Tip:
+        return Tip(Coins.from_data(data["amount"]), data["tipper"])
+
+    def to_proto(self) -> Tip_pb:
+        return Tip_pb(amount=self.amount.to_proto(), tipper=self.tipper)
+
+    @classmethod
+    def from_proto(cls, proto: Tip_pb) -> Tip:
+        return Tip(Coins.from_proto(proto.amount), proto.tipper)
 
 
 @attr.s
@@ -243,6 +311,7 @@ class AuthInfo(JSONSerializable):
 
     signer_infos: List[SignerInfo] = attr.ib(converter=list)
     fee: Fee = attr.ib()
+    tip: Optional[Tip] = attr.ib(default=None)
 
     def to_amino(self) -> dict:
         return {
@@ -257,12 +326,14 @@ class AuthInfo(JSONSerializable):
         return {
             "signer_infos": [si.to_data() for si in self.signer_infos],
             "fee": self.fee.to_data(),
+            "tip": self.tip.to_data() if self.tip else None,
         }
 
     def to_proto(self) -> AuthInfo_pb:
         return AuthInfo_pb(
             signer_infos=[signer.to_proto() for signer in self.signer_infos],
             fee=self.fee.to_proto(),
+            tip=self.tip.to_proto() if self.tip else None,
         )
 
     @classmethod
@@ -277,6 +348,7 @@ class AuthInfo(JSONSerializable):
         return cls(
             [SignerInfo.from_data(m) for m in data["signer_infos"]],
             Fee.from_data(data["fee"]),
+            Tip.from_data(data["tip"]) if data.get("tip") else None,
         )
 
     @classmethod
@@ -284,6 +356,7 @@ class AuthInfo(JSONSerializable):
         return cls(
             [SignerInfo.from_proto(m) for m in proto.signer_infos],
             Fee.from_proto(proto.fee),
+            Tip.from_proto(proto.tip) if proto.tip else None,
         )
 
 
@@ -384,6 +457,13 @@ class TxLog(JSONSerializable):
 
     def __attrs_post_init__(self):
         self.events_by_type = parse_events_by_type(self.events)
+
+    def to_data(self) -> dict:
+        return {
+            "msg_index": self.msg_index,
+            "log": self.log,
+            "events": self.events,
+        }
 
     @classmethod
     def from_proto(cls, tx_log: AbciMessageLog_pb) -> TxLog:
@@ -514,17 +594,7 @@ class TxInfo(JSONSerializable):
             "code": self.code,
             "codespace": self.codespace,
         }
-
-        # if not self.logs:
-        #     del data["logs"]
-        #
-        # if not self.code:
-        #     del data["code"]
-        #
-        # if not self.codespace:
-        #     del data["codespace"]
-
-        return data
+        return _recursive_bytes_to_str(data)
 
     @classmethod
     def from_data(cls, data: dict) -> TxInfo:
