@@ -31,6 +31,17 @@ The Terra Classic Data Analysis Software Development Kit (SDK) not only possesse
 
 
 ## Recent changes
+### V0.2.6 (2025-12-25)
+for SDK 53 upgrade:
+feat(core): Add Tip type and optimize transaction processing functionality
+
+- Added support for the Tip type in the core module.
+- Added the `expedited` proposal field in the gov module.
+- Optimized the code ID and contract address extraction logic in `contract.py`.
+- Improved JSON serialization processing by adding bytes type conversion.
+- Updated the transaction body structure, added `timeout_height` conversion and new fields.
+- Added the `to_data` method to transaction logs and recursive byte - to - string functionality.
+
 ### V0.2.5 (2025-12-15)
 fix(wasm): Improve the message parsing function to support more data types
 
